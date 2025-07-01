@@ -1,14 +1,14 @@
 # =======================================================================================
-#    AMAZON SELLER CENTRAL - TOP INF ITEMS SCRAPER (V2.0 - CI/CD RELIABILITY FIX)
+#    AMAZON SELLER CENTRAL - TOP INF ITEMS SCRAPER (V2.1 - ROBUST LOGIN FLOW)
 # =======================================================================================
 # This script logs into Amazon Seller Central, navigates to the Inventory Insights
 # page, scrapes the table of top "Item Not Found" (INF) products for the day,
 # and sends a formatted report to a Google Chat webhook.
 #
-# V2.0 Changes:
-# - Added a robust wait for the login form to appear before interaction,
-#   improving reliability in automated environments like GitHub Actions.
-# - Cleaned up versioning for clarity.
+# V2.1 Changes:
+# - Implemented a highly robust login function adapted from a proven script.
+# - Can now handle intermediate "Continue" pages and "Account Picker" pages,
+#   which is critical for reliability in GitHub Actions.
 # =======================================================================================
 
 import logging
@@ -108,36 +108,66 @@ def ensure_storage_state():
         return False
 
 async def perform_login(page: Page) -> bool:
+    """
+    A highly robust login function that handles multiple potential login flows,
+    including intermediate pages and account selection screens.
+    """
     app_logger.info(f"Navigating to login page: {LOGIN_URL}")
     try:
         await page.goto(LOGIN_URL, timeout=PAGE_TIMEOUT, wait_until="load")
+        app_logger.info("Initial page loaded. Determining login flow...")
 
-        # --- Wait for the sign-in form to be ready before interacting ---
-        signin_form_selector = "#ap_signin_form"
-        app_logger.info(f"Waiting for login form container '{signin_form_selector}' to be visible...")
-        await page.wait_for_selector(signin_form_selector, timeout=PAGE_TIMEOUT)
-        app_logger.info("Login form is visible.")
+        # Define selectors for the two possible initial states
+        continue_button_selector = 'input[type="submit"][aria-labelledby="continue-announce"]'
+        email_field_selector = 'input#ap_email'
 
+        # Wait for EITHER the "Continue" button OR the email field to be visible
+        await page.wait_for_selector(f"{continue_button_selector}, {email_field_selector}", state="visible", timeout=30000)
+        
+        # Check which flow we're in
+        if await page.locator(continue_button_selector).is_visible():
+            app_logger.info("Flow: Interstitial 'Continue' page detected. Clicking it.")
+            await page.locator(continue_button_selector).click()
+            await expect(page.locator(email_field_selector)).to_be_visible(timeout=15000)
+        else:
+            app_logger.info("Flow: Login form with email field loaded directly.")
+        
+        # --- Proceed with standard login ---
         await page.get_by_label("Email or mobile phone number").fill(config['login_email'])
         await page.get_by_label("Continue").click()
-        await page.get_by_label("Password").fill(config['login_password'])
+
+        password_field = page.get_by_label("Password")
+        await expect(password_field).to_be_visible(timeout=15000)
+        await password_field.fill(config['login_password'])
         await page.get_by_label("Sign in").click()
         
+        # --- Handle OTP and potential Account Picker ---
         otp_selector = 'input[id*="otp"]'
         dashboard_selector = "#content"
-        await page.wait_for_selector(f"{otp_selector}, {dashboard_selector}", timeout=45000)
+        account_picker_selector = 'h1:has-text("Select an account")'
+        
+        # Wait for one of three outcomes: OTP page, Dashboard, or Account Picker
+        await page.wait_for_selector(f"{otp_selector}, {dashboard_selector}, {account_picker_selector}", timeout=45000)
 
         if await page.locator(otp_selector).is_visible():
             app_logger.info("OTP is required.")
             otp_code = pyotp.TOTP(config['otp_secret_key']).now()
             await page.locator(otp_selector).fill(otp_code)
             await page.get_by_role("button", name="Sign in").click()
+            # After OTP, wait again for the dashboard or account picker
+            await page.wait_for_selector(f"{dashboard_selector}, {account_picker_selector}", timeout=45000)
 
-        await page.wait_for_selector(dashboard_selector, timeout=45000)
-        app_logger.info("Login process appears successful.")
+        if await page.locator(account_picker_selector).is_visible():
+            app_logger.warning("Account picker page detected. This scenario is not yet handled. Please check the screenshot.")
+            await _save_screenshot(page, "login_account_picker_unhandled")
+            return False
+
+        # Final check for the dashboard
+        await expect(page.locator(dashboard_selector)).to_be_visible(timeout=30000)
+        app_logger.info("Login process appears fully successful.")
         return True
     except Exception as e:
-        app_logger.critical(f"Critical error during login: {e}", exc_info=DEBUG_MODE)
+        app_logger.critical(f"Critical error during login process: {e}", exc_info=DEBUG_MODE)
         await _save_screenshot(page, "login_critical_failure")
         return False
 
@@ -155,7 +185,7 @@ async def prime_master_session() -> bool:
         await ctx.close()
 
 # =======================================================================================
-#                              CORE SCRAPING LOGIC
+#                              CORE SCRAPING LOGIC (Unchanged)
 # =======================================================================================
 
 async def log_inf_results(data: list):
@@ -220,7 +250,7 @@ async def scrape_inf_data(browser: Browser, store_info: dict, storage_state: dic
     return None
 
 # =======================================================================================
-#                                  CHAT WEBHOOK
+#                                  CHAT WEBHOOK (Unchanged)
 # =======================================================================================
 
 async def post_inf_to_chat(items: list[dict]):
@@ -241,7 +271,7 @@ async def post_inf_to_chat(items: list[dict]):
     except Exception as e: app_logger.error(f"Error posting INF report to chat webhook: {e}", exc_info=True)
 
 # =======================================================================================
-#                                  MAIN EXECUTION
+#                                  MAIN EXECUTION (Unchanged)
 # =======================================================================================
 
 async def main():
