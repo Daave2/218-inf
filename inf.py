@@ -70,7 +70,7 @@ DEBUG_MODE    = config.get('debug', False)
 LOGIN_URL     = config['login_url']
 INF_WEBHOOK   = config.get('inf_webhook_url')
 TARGET_STORE  = config['target_store']
-SINGLE_CARD   = config.get('single_card', True)  # new option
+SINGLE_CARD   = config.get('single_card', False)  # new option
 
 # --- Paths & timeouts ---
 OUTPUT_DIR      = 'output'
