@@ -1,14 +1,12 @@
 # =======================================================================================
-#    AMAZON SELLER CENTRAL - TOP INF ITEMS SCRAPER (V2.1 - ROBUST LOGIN FLOW)
+#    AMAZON SELLER CENTRAL - TOP INF ITEMS SCRAPER (V3.2.3 - FINAL LOGIC)
 # =======================================================================================
 # This script logs into Amazon Seller Central, navigates to the Inventory Insights
-# page, scrapes the table of top "Item Not Found" (INF) products for the day,
-# and sends a formatted report to a Google Chat webhook.
+# page, and scrapes the top "Item Not Found" (INF) products.
 #
-# V2.1 Changes:
-# - Implemented a highly robust login function adapted from a proven script.
-# - Can now handle intermediate "Continue" pages and "Account Picker" pages,
-#   which is critical for reliability in GitHub Actions.
+# V3.2.3 Changes:
+# - Wrapped the 250-pageSize change in a try/except to catch timeouts and proceed.
+# - All other behavior identical to V3.2.2 (250 rows, batching, SINGLE_CARD config, etc).
 # =======================================================================================
 
 import logging
@@ -16,6 +14,7 @@ import re
 import urllib.parse
 from datetime import datetime
 from pytz import timezone
+from typing import Awaitable, Callable
 from playwright.async_api import (
     async_playwright,
     Browser,
@@ -33,57 +32,60 @@ import aiohttp
 import aiofiles
 import ssl
 import certifi
+import argparse
 
 # --- Basic Setup ---
-LOCAL_TIMEZONE = timezone('Europe/London')
+LOCAL_TIMEZONE   = timezone('Europe/London')
+TABLE_POLL_DELAY = 1.0    # seconds to wait after table actions
+BATCH_SIZE       = 30     # max items per webhook message
+SMALL_IMAGE_SIZE = 100    # px for product thumbnails
+QR_CODE_SIZE     = 80     # px for QR codes
 
 class LocalTimeFormatter(logging.Formatter):
     def converter(self, ts: float):
-        dt = datetime.fromtimestamp(ts, LOCAL_TIMEZONE)
-        return dt.timetuple()
+        return datetime.fromtimestamp(ts, LOCAL_TIMEZONE).timetuple()
 
 def setup_logging():
-    app_logger = logging.getLogger('inf_app')
-    app_logger.setLevel(logging.INFO)
-    app_file = RotatingFileHandler('inf_app.log', maxBytes=10**7, backupCount=5)
-    fmt = LocalTimeFormatter('%(asctime)s %(levelname)s %(message)s')
-    app_file.setFormatter(fmt)
-    console = logging.StreamHandler()
-    console.setFormatter(fmt)
-    app_logger.addHandler(app_file)
-    app_logger.addHandler(console)
-    return app_logger
+    log = logging.getLogger('inf_app')
+    log.setLevel(logging.INFO)
+    fh = RotatingFileHandler('inf_app.log', maxBytes=10**7, backupCount=5)
+    fh.setFormatter(LocalTimeFormatter('%(asctime)s %(levelname)s %(message)s'))
+    ch = logging.StreamHandler()
+    ch.setFormatter(LocalTimeFormatter('%(asctime)s %(levelname)s %(message)s'))
+    log.addHandler(fh)
+    log.addHandler(ch)
+    return log
 
 app_logger = setup_logging()
 
-# --- Config & Constants ---
+# --- Load config ---
 try:
-    with open('config.json', 'r') as config_file:
-        config = json.load(config_file)
+    with open('config.json', 'r') as f:
+        config = json.load(f)
 except FileNotFoundError:
     app_logger.critical("config.json not found. Please create it before running.")
     exit(1)
 
-DEBUG_MODE       = config.get('debug', False)
-LOGIN_URL        = config['login_url']
-INF_WEBHOOK_URL  = config.get('inf_webhook_url')
-TARGET_STORE     = config['target_store']
+DEBUG_MODE    = config.get('debug', False)
+LOGIN_URL     = config['login_url']
+INF_WEBHOOK   = config.get('inf_webhook_url')
+TARGET_STORE  = config['target_store']
+SINGLE_CARD   = config.get('single_card', True)  # new option
 
-# --- File & Directory Paths ---
-JSON_LOG_FILE   = os.path.join('output', 'inf_items.jsonl')
-STORAGE_STATE   = 'state.json'
+# --- Paths & timeouts ---
 OUTPUT_DIR      = 'output'
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+JSON_LOG_FILE   = os.path.join(OUTPUT_DIR, 'inf_items.jsonl')
+STORAGE_STATE   = 'state.json'
 
-# --- Playwright Settings ---
-PAGE_TIMEOUT    = 90000
-ACTION_TIMEOUT  = 30000
-WAIT_TIMEOUT    = 45000
+PAGE_TIMEOUT       = 90_000
+ACTION_TIMEOUT     = 45_000
+WAIT_TIMEOUT       = 45_000
 WORKER_RETRY_COUNT = 3
 
 playwright = None
-browser = None
-log_lock = asyncio.Lock()
+browser    = None
+log_lock   = asyncio.Lock()
 
 
 # =======================================================================================
@@ -91,84 +93,82 @@ log_lock = asyncio.Lock()
 # =======================================================================================
 
 async def _save_screenshot(page: Page | None, prefix: str):
-    if not page or page.is_closed(): return
+    if not page or page.is_closed():
+        return
     try:
-        path = os.path.join(OUTPUT_DIR, f"{prefix}_{datetime.now(LOCAL_TIMEZONE).strftime('%Y%m%d_%H%M%S')}.png")
+        path = os.path.join(
+            OUTPUT_DIR,
+            f"{prefix}_{datetime.now(LOCAL_TIMEZONE).strftime('%Y%m%d_%H%M%S')}.png"
+        )
         await page.screenshot(path=path, full_page=True, timeout=15000)
-        app_logger.info(f"Screenshot saved for debugging: {path}")
+        app_logger.info(f"Screenshot saved: {path}")
     except Exception as e:
-        app_logger.error(f"Failed to save screenshot with prefix '{prefix}': {e}")
+        app_logger.error(f"Screenshot error: {e}")
 
-def ensure_storage_state():
-    if not os.path.exists(STORAGE_STATE) or os.path.getsize(STORAGE_STATE) == 0: return False
+def ensure_storage_state() -> bool:
+    if not os.path.exists(STORAGE_STATE) or os.path.getsize(STORAGE_STATE) == 0:
+        return False
     try:
-        with open(STORAGE_STATE) as f: data = json.load(f)
-        return isinstance(data, dict) and "cookies" in data and data["cookies"]
-    except json.JSONDecodeError:
+        data = json.load(open(STORAGE_STATE))
+        return isinstance(data, dict) and data.get("cookies")
+    except:
         return False
 
+async def check_if_login_needed(page: Page, test_url: str) -> bool:
+    try:
+        await page.goto(test_url, timeout=PAGE_TIMEOUT, wait_until="load")
+        if "signin" in page.url.lower() or "/ap/" in page.url:
+            app_logger.info("Session invalid, login required.")
+            return True
+        await expect(page.locator("#range-selector")).to_be_visible(timeout=WAIT_TIMEOUT)
+        app_logger.info("Existing session still valid.")
+        return False
+    except Exception:
+        app_logger.warning("Error verifying session; assuming login required.")
+        return True
+
 async def perform_login(page: Page) -> bool:
-    """
-    A highly robust login function that handles multiple potential login flows,
-    including intermediate pages and account selection screens.
-    """
-    app_logger.info(f"Navigating to login page: {LOGIN_URL}")
+    app_logger.info("Starting login flow")
     try:
         await page.goto(LOGIN_URL, timeout=PAGE_TIMEOUT, wait_until="load")
-        app_logger.info("Initial page loaded. Determining login flow...")
+        cont_input = 'input[type="submit"][aria-labelledby="continue-announce"]'
+        cont_btn   = 'button:has-text("Continue shopping")'
+        email_sel  = 'input#ap_email'
+        await page.wait_for_selector(f"{cont_input}, {cont_btn}, {email_sel}", timeout=ACTION_TIMEOUT)
+        if await page.locator(cont_input).is_visible():
+            await page.locator(cont_input).click()
+        elif await page.locator(cont_btn).is_visible():
+            await page.locator(cont_btn).click()
 
-        # Define selectors for the two possible initial states
-        continue_button_selector = 'input[type="submit"][aria-labelledby="continue-announce"]'
-        email_field_selector = 'input#ap_email'
-
-        # Wait for EITHER the "Continue" button OR the email field to be visible
-        await page.wait_for_selector(f"{continue_button_selector}, {email_field_selector}", state="visible", timeout=30000)
-        
-        # Check which flow we're in
-        if await page.locator(continue_button_selector).is_visible():
-            app_logger.info("Flow: Interstitial 'Continue' page detected. Clicking it.")
-            await page.locator(continue_button_selector).click()
-            await expect(page.locator(email_field_selector)).to_be_visible(timeout=15000)
-        else:
-            app_logger.info("Flow: Login form with email field loaded directly.")
-        
-        # --- Proceed with standard login ---
+        await expect(page.locator(email_sel)).to_be_visible(timeout=WAIT_TIMEOUT)
         await page.get_by_label("Email or mobile phone number").fill(config['login_email'])
         await page.get_by_label("Continue").click()
-
-        password_field = page.get_by_label("Password")
-        await expect(password_field).to_be_visible(timeout=15000)
-        await password_field.fill(config['login_password'])
+        pw = page.get_by_label("Password")
+        await expect(pw).to_be_visible(timeout=WAIT_TIMEOUT)
+        await pw.fill(config['login_password'])
         await page.get_by_label("Sign in").click()
-        
-        # --- Handle OTP and potential Account Picker ---
-        otp_selector = 'input[id*="otp"]'
-        dashboard_selector = "#content"
-        account_picker_selector = 'h1:has-text("Select an account")'
-        
-        # Wait for one of three outcomes: OTP page, Dashboard, or Account Picker
-        await page.wait_for_selector(f"{otp_selector}, {dashboard_selector}, {account_picker_selector}", timeout=45000)
 
-        if await page.locator(otp_selector).is_visible():
-            app_logger.info("OTP is required.")
-            otp_code = pyotp.TOTP(config['otp_secret_key']).now()
-            await page.locator(otp_selector).fill(otp_code)
+        otp_sel  = 'input[id*="otp"]'
+        dash_sel = "#content"
+        acct_sel = 'h1:has-text("Select an account")'
+        await page.wait_for_selector(f"{otp_sel}, {dash_sel}, {acct_sel}", timeout=WAIT_TIMEOUT)
+        if await page.locator(otp_sel).is_visible():
+            code = pyotp.TOTP(config['otp_secret_key']).now()
+            await page.locator(otp_sel).fill(code)
             await page.get_by_role("button", name="Sign in").click()
-            # After OTP, wait again for the dashboard or account picker
-            await page.wait_for_selector(f"{dashboard_selector}, {account_picker_selector}", timeout=45000)
-
-        if await page.locator(account_picker_selector).is_visible():
-            app_logger.warning("Account picker page detected. This scenario is not yet handled. Please check the screenshot.")
-            await _save_screenshot(page, "login_account_picker_unhandled")
+            await page.wait_for_selector(f"{dash_sel}, {acct_sel}", timeout=WAIT_TIMEOUT)
+        if await page.locator(acct_sel).is_visible():
+            app_logger.error("Account-picker shown; unhandled.")
+            await _save_screenshot(page, "login_account_picker")
             return False
 
-        # Final check for the dashboard
-        await expect(page.locator(dashboard_selector)).to_be_visible(timeout=30000)
-        app_logger.info("Login process appears fully successful.")
+        await expect(page.locator(dash_sel)).to_be_visible(timeout=WAIT_TIMEOUT)
+        app_logger.info("Login successful.")
         return True
+
     except Exception as e:
-        app_logger.critical(f"Critical error during login process: {e}", exc_info=DEBUG_MODE)
-        await _save_screenshot(page, "login_critical_failure")
+        app_logger.critical(f"Login failed: {e}", exc_info=DEBUG_MODE)
+        await _save_screenshot(page, "login_failure")
         return False
 
 async def prime_master_session() -> bool:
@@ -177,124 +177,277 @@ async def prime_master_session() -> bool:
     ctx = await browser.new_context()
     try:
         page = await ctx.new_page()
-        if not await perform_login(page): return False
+        if not await perform_login(page):
+            return False
         await ctx.storage_state(path=STORAGE_STATE)
-        app_logger.info(f"Login successful. Auth state saved to '{STORAGE_STATE}'.")
+        app_logger.info("Saved new session state.")
         return True
     finally:
         await ctx.close()
 
+
 # =======================================================================================
-#                              CORE SCRAPING LOGIC (Unchanged)
+#                              CORE SCRAPING LOGIC
 # =======================================================================================
 
 async def log_inf_results(data: list):
     async with log_lock:
-        log_entry = {'timestamp': datetime.now(LOCAL_TIMEZONE).strftime('%Y-%m-%d %H:%M:%S'), 'store': TARGET_STORE['store_name'], 'inf_items': data }
+        entry = {
+            'timestamp': datetime.now(LOCAL_TIMEZONE).strftime('%Y-%m-%d %H:%M:%S'),
+            'store': TARGET_STORE['store_name'],
+            'inf_items': data
+        }
         try:
-            async with aiofiles.open(JSON_LOG_FILE, 'a', encoding='utf-8') as f: await f.write(json.dumps(log_entry) + '\n')
-        except IOError as e: app_logger.error(f"Error writing to INF JSON log file {JSON_LOG_FILE}: {e}")
-
-async def scrape_inf_data(browser: Browser, store_info: dict, storage_state: dict) -> list[dict] | None:
-    store_name = store_info['store_name']
-    app_logger.info(f"Starting INF data collection for '{store_name}'")
-    for attempt in range(WORKER_RETRY_COUNT):
-        ctx: BrowserContext = None
-        page: Page = None
-        try:
-            ctx = await browser.new_context(storage_state=storage_state)
-            page = await ctx.new_page()
-            inf_url = (f"https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid={store_info['merchant_id']}&mons_sel_mkid={store_info['marketplace_id']}")
-            app_logger.info(f"Navigating to Inventory Insights URL: {inf_url}")
-            await page.goto(inf_url, timeout=PAGE_TIMEOUT, wait_until="domcontentloaded")
-            table_selector = "table.imp-table"
-            app_logger.info(f"Waiting for INF table container '{table_selector}' to be visible...")
-            await expect(page.locator(table_selector)).to_be_visible(timeout=WAIT_TIMEOUT)
-            app_logger.info("Table container found.")
-            try:
-                first_row_locator = page.locator(f"{table_selector} tbody tr").first
-                app_logger.info("Waiting for table to be populated with data...")
-                await expect(first_row_locator).to_be_visible(timeout=WAIT_TIMEOUT)
-                app_logger.info("Table data has loaded.")
-            except TimeoutError:
-                app_logger.info(f"No data rows appeared for '{store_name}'. Assuming zero INF items.")
-                return []
-            try:
-                sort_header = page.locator("#sort-3")
-                app_logger.info("Clicking 'INF Units' header to sort table...")
-                await sort_header.click(timeout=ACTION_TIMEOUT)
-                await expect(sort_header).to_have_class(re.compile(r'\bimp-sorted\b'), timeout=ACTION_TIMEOUT)
-                app_logger.info("Table sorted successfully by INF Units.")
-                await page.wait_for_timeout(1000) 
-            except Exception as e:
-                app_logger.warning(f"Could not sort table by INF Units. Data may not be ordered correctly. Error: {e}")
-                await _save_screenshot(page, f"{store_name}_inf_sort_error")
-            inf_items = []
-            rows = await page.locator(f"{table_selector} tbody tr").all()
-            app_logger.info(f"Found {len(rows)} items in the table after sorting.")
-            for row in rows:
-                try:
-                    cells = row.locator("td")
-                    thumb_url = await cells.nth(0).locator("img").get_attribute("src")
-                    resized_image_url = re.sub(r'\._SS\d+_\.', '._SS250_.', thumb_url) if thumb_url else ""
-                    item_data = { 'image_url': resized_image_url, 'sku': await cells.nth(1).locator("span").inner_text(), 'product_name': await cells.nth(2).locator("a span").inner_text(), 'inf_units': await cells.nth(3).locator("span").inner_text(), 'orders_impacted': await cells.nth(4).locator("span").inner_text(), 'inf_pct': await cells.nth(8).locator("span").inner_text(), }
-                    inf_items.append(item_data)
-                except Exception as e: app_logger.warning(f"Could not parse a row in the INF table. Error: {e}. Skipping row.")
-            app_logger.info(f"Successfully scraped {len(inf_items)} INF items for {store_name}.")
-            return inf_items
+            async with aiofiles.open(JSON_LOG_FILE, 'a', encoding='utf-8') as f:
+                await f.write(json.dumps(entry) + '\n')
+            app_logger.info("Logged INF results to file.")
         except Exception as e:
-            app_logger.warning(f"Attempt {attempt+1} for INF scrape failed for {store_name}: {e}", exc_info=True)
-            if attempt == WORKER_RETRY_COUNT - 1: app_logger.error(f"All INF scrape attempts failed for {store_name}."); await _save_screenshot(page, f"{store_name}_inf_scrape_error")
-        finally:
-            if ctx: await ctx.close()
-    return None
+            app_logger.error(f"Log write error: {e}")
 
-# =======================================================================================
-#                                  CHAT WEBHOOK (Unchanged)
-# =======================================================================================
+async def wait_for_table_change(
+    page: Page,
+    table_sel: str,
+    action: Callable[[], Awaitable]
+):
+    first = page.locator(f"{table_sel} tr:first-child")
+    text0 = ""
+    if await first.count() > 0:
+        text0 = await first.text_content() or ""
+    await action()
+    await asyncio.sleep(TABLE_POLL_DELAY)
+    await page.wait_for_function(
+        """([sel, init]) => {
+            const el = document.querySelector(sel + ' tr:first-child');
+            if (!el) return init !== '';
+            return el.textContent.trim() !== init.trim();
+        }""",
+        arg=[table_sel, text0],
+        timeout=WAIT_TIMEOUT
+    )
+
+async def scrape_inf_data(
+    browser: Browser,
+    store_info: dict,
+    storage_state: dict,
+    fetch_yesterday: bool = False
+) -> list[dict] | None:
+    store = store_info['store_name']
+    app_logger.info(f"Opening context for '{store}'")
+    ctx = await browser.new_context(storage_state=storage_state)
+    page = await ctx.new_page()
+    try:
+        url = (
+            "https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/"
+            f"?ref_=mp_home_logo_xx&cor=mmp_EU"
+            f"&mons_sel_dir_mcid={store_info['merchant_id']}"
+            f"&mons_sel_mkid={store_info['marketplace_id']}"
+        )
+        app_logger.info(f"Navigating to Inventory Insights for '{store}'")
+        await page.goto(url, timeout=PAGE_TIMEOUT, wait_until="domcontentloaded")
+        await expect(page.locator("#range-selector")).to_be_visible(timeout=WAIT_TIMEOUT)
+        app_logger.info("Date-picker is visible.")
+
+        table_sel = "table.imp-table tbody"
+        if fetch_yesterday:
+            app_logger.info("Applying 'Yesterday' filter")
+            link = page.get_by_role("link", name="Yesterday")
+            await wait_for_table_change(page, table_sel, lambda: link.click())
+
+        try:
+            await expect(page.locator(f"{table_sel} tr").first).to_be_visible(timeout=20000)
+        except TimeoutError:
+            app_logger.info("No data rows found; exiting scrape cleanly.")
+            return []
+
+        # try/catch around pageSize change
+        app_logger.info("Setting pageSize to 250 via <select>")
+        try:
+            await wait_for_table_change(
+                page, table_sel,
+                lambda: page.select_option('select[name="pageSizeDropDown"]', '250')
+            )
+        except TimeoutError:
+            app_logger.warning(
+                "Timed out waiting for pageSize change—"
+                "assuming table has already loaded at 250 rows."
+            )
+
+        app_logger.info("Sorting table by 'INF Units'")
+        await wait_for_table_change(page, table_sel, lambda: page.locator("#sort-3").click())
+
+        rows = await page.locator(f"{table_sel} tr").all()
+        app_logger.info(f"Found {len(rows)} rows; extracting data")
+
+        items = []
+        for r in rows:
+            try:
+                cells = r.locator("td")
+                thumb = await cells.nth(0).locator("img").get_attribute("src") or ""
+                img   = re.sub(r'\._SS\d+_\.', f'._SS{SMALL_IMAGE_SIZE}_.', thumb)
+                items.append({
+                    'image_url': img,
+                    'sku': await cells.nth(1).locator("span").inner_text(),
+                    'product_name': await cells.nth(2).locator("a span").inner_text(),
+                    'inf_units': await cells.nth(3).locator("span").inner_text(),
+                    'orders_impacted': await cells.nth(4).locator("span").inner_text(),
+                    'inf_pct': await cells.nth(8).locator("span").inner_text(),
+                })
+            except Exception as e:
+                app_logger.warning(f"Failed to parse row: {e}")
+
+        app_logger.info(f"Scraped {len(items)} INF items for '{store}'")
+        return items
+
+    except Exception as e:
+        app_logger.error(f"Error during scrape: {e}", exc_info=True)
+        await _save_screenshot(page, "scrape_error")
+        return None
+
+    finally:
+        await ctx.close()
 
 async def post_inf_to_chat(items: list[dict]):
-    if not INF_WEBHOOK_URL: app_logger.warning("INF_WEBHOOK_URL not configured. Skipping chat notification."); return
-    if not items: app_logger.info("post_inf_to_chat called with no items. No report will be sent."); return
-    store_name = TARGET_STORE.get("store_name", "Unknown Store"); timestamp = datetime.now(LOCAL_TIMEZONE).strftime("%A %d %B, %H:%M"); item_widgets = [{"divider": {}}]
-    for item in items[:12]: 
-        encoded_sku = urllib.parse.quote(item['sku']); qr_code_url = f"https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={encoded_sku}"
-        widget = { "columns": { "columnItems": [ { "horizontalSizeStyle": "FILL_MINIMUM_SPACE", "horizontalAlignment": "CENTER", "verticalAlignment": "CENTER", "widgets": [{"image": { "imageUrl": qr_code_url, "altText": f"QR Code for SKU {item['sku']}" }}] }, { "horizontalSizeStyle": "FILL_AVAILABLE_SPACE", "widgets": [ {"textParagraph": { "text": (f"<b>{item['product_name']}</b><br>" f"<b>SKU:</b> {item['sku']}<br>" f"<b>INF Units:</b> {item['inf_units']} ({item['inf_pct']}) | " f"<b>Orders:</b> {item['orders_impacted']}") }}, {"image": { "imageUrl": item['image_url'], "altText": item['product_name'] }} ] } ] } }
-        item_widgets.append(widget); item_widgets.append({"divider": {}})
-    payload = { "cardsV2": [{ "cardId": f"inf-report-{store_name.replace(' ', '-')}", "card": { "header": { "title": f"Top INF Items Report - {store_name}", "subtitle": f"Sorted by INF Units | {timestamp}", "imageUrl": "https://cdn-icons-png.flaticon.com/512/2838/2838885.png", "imageType": "CIRCLE" }, "sections": [{"widgets": item_widgets}] } }] }
-    try:
-        timeout = aiohttp.ClientTimeout(total=30); ssl_context = ssl.create_default_context(cafile=certifi.where())
-        async with aiohttp.ClientSession(timeout=timeout, connector=aiohttp.TCPConnector(ssl=ssl_context)) as session:
-            async with session.post(INF_WEBHOOK_URL, json=payload) as resp:
-                if resp.status != 200: error_text = await resp.text(); app_logger.error(f"INF chat webhook failed. Status: {resp.status}, Response: {error_text}")
-                else: app_logger.info("Successfully posted INF report to chat webhook.")
-    except Exception as e: app_logger.error(f"Error posting INF report to chat webhook: {e}", exc_info=True)
+    if not INF_WEBHOOK:
+        app_logger.warning("INF_WEBHOOK_URL not set; skipping chat post.")
+        return
+    if not items:
+        app_logger.info("No items to post; skipping chat post.")
+        return
+
+    ts = datetime.now(LOCAL_TIMEZONE).strftime("%A %d %B, %H:%M")
+    store = TARGET_STORE['store_name']
+
+    if SINGLE_CARD:
+        batches = [items[:BATCH_SIZE]]
+        app_logger.info(f"SINGLE_CARD enabled: sending 1 card with up to {BATCH_SIZE} items")
+    else:
+        batches = [items[i:i+BATCH_SIZE] for i in range(0, len(items), BATCH_SIZE)]
+        app_logger.info(f"SENDING {len(batches)} batch(es) of up to {BATCH_SIZE} items each")
+
+    for idx, batch in enumerate(batches, start=1):
+        widgets = [{"divider": {}}]
+        for it in batch:
+            code = urllib.parse.quote(it['sku'])
+            qr   = f"https://api.qrserver.com/v1/create-qr-code/?size={QR_CODE_SIZE}x{QR_CODE_SIZE}&data={code}"
+            widgets += [
+                {
+                    "columns": {
+                        "columnItems": [
+                            {
+                                "horizontalSizeStyle": "FILL_MINIMUM_SPACE",
+                                "horizontalAlignment": "CENTER",
+                                "verticalAlignment": "CENTER",
+                                "widgets": [{"image": {"imageUrl": qr, "altText": f"QR {it['sku']}"}}]
+                            },
+                            {
+                                "horizontalSizeStyle": "FILL_AVAILABLE_SPACE",
+                                "widgets": [
+                                    {"textParagraph": {"text": (
+                                        f"<b>{it['product_name']}</b><br>"
+                                        f"<b>SKU:</b> {it['sku']}<br>"
+                                        f"<b>INF Units:</b> {it['inf_units']} ({it['inf_pct']}) | "
+                                        f"<b>Orders:</b> {it['orders_impacted']}"
+                                    )}},
+                                    {"image": {"imageUrl": it['image_url'], "altText": it['product_name']}}
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {"divider": {}}
+            ]
+
+        total = len(batches)
+        subtitle = f"Sorted by INF Units | {ts}"
+        if not SINGLE_CARD:
+            subtitle += f" | batch {idx}/{total}"
+
+        payload = {
+            "cardsV2": [{
+                "cardId": f"inf-report-{store.replace(' ', '-')}" + (f"-b{idx}" if not SINGLE_CARD else ""),
+                "card": {
+                    "header": {
+                        "title": f"Top INF Items Report - {store}",
+                        "subtitle": subtitle,
+                        "imageUrl": "https://cdn-icons-png.flaticon.com/512/2838/2838885.png",
+                        "imageType": "CIRCLE"
+                    },
+                    "sections": [{"widgets": widgets}]
+                }
+            }]
+        }
+
+        app_logger.info(f"Posting batch {idx}/{len(batches)} with {len(batch)} items")
+        try:
+            async with aiohttp.ClientSession(
+                timeout=aiohttp.ClientTimeout(total=30),
+                connector=aiohttp.TCPConnector(ssl=ssl.create_default_context(cafile=certifi.where()))
+            ) as session:
+                resp = await session.post(INF_WEBHOOK, json=payload)
+                if resp.status == 200:
+                    app_logger.info(f"Posted batch {idx}/{len(batches)} successfully")
+                else:
+                    text = await resp.text()
+                    app_logger.error(f"Batch {idx} failed ({resp.status}): {text}")
+        except Exception as e:
+            app_logger.error(f"Error posting batch {idx}: {e}", exc_info=True)
+
 
 # =======================================================================================
-#                                  MAIN EXECUTION (Unchanged)
+#                                  MAIN EXECUTION
 # =======================================================================================
 
-async def main():
+async def main(args):
     global playwright, browser
-    app_logger.info("Starting up INF Items Scraper...")
-    try:
-        playwright = await async_playwright().start()
-        browser = await playwright.chromium.launch(headless=not DEBUG_MODE)
-        if not ensure_storage_state():
-             if not await prime_master_session(): app_logger.critical("Fatal: Could not establish a login session. Aborting."); return
-        with open(STORAGE_STATE) as f: storage_state = json.load(f)
-        inf_data = await scrape_inf_data(browser, TARGET_STORE, storage_state)
-        if inf_data is not None:
-            if inf_data: await log_inf_results(inf_data); await post_inf_to_chat(inf_data)
-            else: app_logger.info("Run completed: No INF items to report today.")
-            app_logger.info("INF scraper run completed successfully.")
-        else: app_logger.error("INF scraper run failed: Could not retrieve data for the target store.")
-    except Exception as e: app_logger.critical(f"A critical error occurred in main execution: {e}", exc_info=True)
-    finally:
-        app_logger.info("Shutting down...");
-        if browser: await browser.close()
-        if playwright: await playwright.stop()
-        app_logger.info("Shutdown complete.")
+
+    app_logger.info("Starting INF scraper run")
+    playwright = await async_playwright().start()
+    browser    = await playwright.chromium.launch(headless=not DEBUG_MODE)
+
+    # check existing session
+    login_required = True
+    if ensure_storage_state():
+        app_logger.info("Found existing storage_state; verifying session")
+        ctx  = await browser.new_context(storage_state=json.load(open(STORAGE_STATE)))
+        pg   = await ctx.new_page()
+        test = (
+            "https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/"
+            f"?ref_=mp_home_logo_xx&cor=mmp_EU"
+            f"&mons_sel_dir_mcid={TARGET_STORE['merchant_id']}"
+            f"& mons_sel_mkid={TARGET_STORE['marketplace_id']}"
+        )
+        login_required = await check_if_login_needed(pg, test)
+        await ctx.close()
+
+    if login_required:
+        app_logger.info("No valid session; logging in")
+        if not await prime_master_session():
+            app_logger.critical("Login failed; aborting run")
+            await browser.close()
+            await playwright.stop()
+            return
+    else:
+        app_logger.info("Reusing existing session")
+
+    storage = json.load(open(STORAGE_STATE))
+    app_logger.info("Beginning data scrape")
+    data    = await scrape_inf_data(browser, TARGET_STORE, storage, fetch_yesterday=args.yesterday)
+
+    if data is None:
+        app_logger.error("Scrape returned None; aborting notifications")
+    elif not data:
+        app_logger.info("No INF items found for the period")
+    else:
+        app_logger.info(f"Retrieved {len(data)} INF items; logging and notifying")
+        await log_inf_results(data)
+        await post_inf_to_chat(data)
+
+    app_logger.info("Run complete; shutting down browser and Playwright")
+    await browser.close()
+    await playwright.stop()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    parser = argparse.ArgumentParser(description="Scrape Top INF Items from Amazon Seller Central.")
+    parser.add_argument("--yesterday", action="store_true", help="Fetch yesterday's data")
+    args = parser.parse_args()
+    asyncio.run(main(args))

@@ -151,3 +151,1121 @@ NameError: name 'inf__data' is not defined. Did you mean: 'inf_data'?
 2025-07-01 16:41:51,153 INFO INF scraper run completed successfully.
 2025-07-01 16:41:51,153 INFO Shutting down...
 2025-07-01 16:41:51,207 INFO Shutdown complete.
+2025-07-02 05:46:52,701 INFO Mode: Fetching YESTERDAY's INF data.
+2025-07-02 05:46:53,333 INFO Starting INF data collection for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 05:46:53,549 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 05:46:54,334 INFO Waiting for INF table container 'table.imp-table' to be visible...
+2025-07-02 05:47:39,365 WARNING Attempt 1 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("table.imp-table")
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 196, in scrape_inf_data
+    await expect(page.locator(table_selector)).to_be_visible(timeout=WAIT_TIMEOUT)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 20213, in to_be_visible
+    await self._impl_obj.to_be_visible(visible=visible, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 741, in to_be_visible
+    await self._expect_impl(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 75, in _expect_impl
+    raise AssertionError(
+AssertionError: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("table.imp-table")
+
+2025-07-02 05:47:39,673 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 05:47:40,376 INFO Waiting for INF table container 'table.imp-table' to be visible...
+2025-07-02 05:48:25,387 WARNING Attempt 2 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("table.imp-table")
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 196, in scrape_inf_data
+    await expect(page.locator(table_selector)).to_be_visible(timeout=WAIT_TIMEOUT)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 20213, in to_be_visible
+    await self._impl_obj.to_be_visible(visible=visible, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 741, in to_be_visible
+    await self._expect_impl(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 75, in _expect_impl
+    raise AssertionError(
+AssertionError: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("table.imp-table")
+
+2025-07-02 05:48:25,601 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 05:48:26,364 INFO Waiting for INF table container 'table.imp-table' to be visible...
+2025-07-02 05:49:11,370 WARNING Attempt 3 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("table.imp-table")
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 196, in scrape_inf_data
+    await expect(page.locator(table_selector)).to_be_visible(timeout=WAIT_TIMEOUT)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 20213, in to_be_visible
+    await self._impl_obj.to_be_visible(visible=visible, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 741, in to_be_visible
+    await self._expect_impl(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 75, in _expect_impl
+    raise AssertionError(
+AssertionError: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("table.imp-table")
+
+2025-07-02 05:49:11,373 ERROR All INF scrape attempts failed for Morrisons - Thornton-Cleveleys.
+2025-07-02 05:49:11,472 INFO Screenshot saved for debugging: output/Morrisons - Thornton-Cleveleys_inf_scrape_error_20250702_054911.png
+2025-07-02 05:49:11,482 ERROR INF scraper run failed: Could not retrieve data for the target store.
+2025-07-02 05:49:11,482 INFO Shutting down...
+2025-07-02 05:49:11,517 INFO Shutdown complete.
+2025-07-02 05:51:57,355 INFO Mode: Fetching YESTERDAY's INF data.
+2025-07-02 05:51:57,900 INFO Starting INF data collection for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 05:51:58,132 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 05:51:58,948 INFO Yesterday's data requested. Applying filters first...
+2025-07-02 05:52:43,996 WARNING Attempt 1 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("#range-selector > div.a-row.a-grid-vertical-align.a-grid-center.imp-range-selector-links > div > ul > li:nth-child(2) > span > a")
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 199, in scrape_inf_data
+    await expect(page.locator(yesterday_selector)).to_be_visible(timeout=WAIT_TIMEOUT)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 20213, in to_be_visible
+    await self._impl_obj.to_be_visible(visible=visible, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 741, in to_be_visible
+    await self._expect_impl(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 75, in _expect_impl
+    raise AssertionError(
+AssertionError: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("#range-selector > div.a-row.a-grid-vertical-align.a-grid-center.imp-range-selector-links > div > ul > li:nth-child(2) > span > a")
+
+2025-07-02 05:52:44,366 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 05:52:45,168 INFO Yesterday's data requested. Applying filters first...
+2025-07-02 05:53:30,188 WARNING Attempt 2 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("#range-selector > div.a-row.a-grid-vertical-align.a-grid-center.imp-range-selector-links > div > ul > li:nth-child(2) > span > a")
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 199, in scrape_inf_data
+    await expect(page.locator(yesterday_selector)).to_be_visible(timeout=WAIT_TIMEOUT)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 20213, in to_be_visible
+    await self._impl_obj.to_be_visible(visible=visible, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 741, in to_be_visible
+    await self._expect_impl(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 75, in _expect_impl
+    raise AssertionError(
+AssertionError: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("#range-selector > div.a-row.a-grid-vertical-align.a-grid-center.imp-range-selector-links > div > ul > li:nth-child(2) > span > a")
+
+2025-07-02 05:53:30,302 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 05:53:31,038 INFO Yesterday's data requested. Applying filters first...
+2025-07-02 05:54:16,046 WARNING Attempt 3 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("#range-selector > div.a-row.a-grid-vertical-align.a-grid-center.imp-range-selector-links > div > ul > li:nth-child(2) > span > a")
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 199, in scrape_inf_data
+    await expect(page.locator(yesterday_selector)).to_be_visible(timeout=WAIT_TIMEOUT)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 20213, in to_be_visible
+    await self._impl_obj.to_be_visible(visible=visible, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 741, in to_be_visible
+    await self._expect_impl(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 75, in _expect_impl
+    raise AssertionError(
+AssertionError: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("#range-selector > div.a-row.a-grid-vertical-align.a-grid-center.imp-range-selector-links > div > ul > li:nth-child(2) > span > a")
+
+2025-07-02 05:54:16,050 ERROR All INF scrape attempts failed for Morrisons - Thornton-Cleveleys.
+2025-07-02 05:54:16,162 INFO Screenshot saved for debugging: output/Morrisons - Thornton-Cleveleys_inf_scrape_error_20250702_055416.png
+2025-07-02 05:54:16,169 ERROR INF scraper run failed: Could not retrieve data for the target store.
+2025-07-02 05:54:16,169 INFO Shutting down...
+2025-07-02 05:54:16,215 INFO Shutdown complete.
+2025-07-02 05:58:09,564 INFO Mode: Fetching YESTERDAY's INF data.
+2025-07-02 05:58:10,200 INFO Starting INF data collection for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 05:58:10,390 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 05:58:11,210 INFO Waiting for the date picker UI to become visible...
+2025-07-02 05:58:56,221 WARNING Attempt 1 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("#range-selector")
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 198, in scrape_inf_data
+    await expect(range_selector_container).to_be_visible(timeout=WAIT_TIMEOUT)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 20213, in to_be_visible
+    await self._impl_obj.to_be_visible(visible=visible, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 741, in to_be_visible
+    await self._expect_impl(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 75, in _expect_impl
+    raise AssertionError(
+AssertionError: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("#range-selector")
+
+2025-07-02 05:58:56,344 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 05:58:56,996 INFO Waiting for the date picker UI to become visible...
+2025-07-02 05:59:37,319 CRITICAL A critical error occurred in main execution: BrowserContext.close: Target page, context or browser has been closed
+Browser logs:
+
+<launching> /Users/nikicooke/Library/Caches/ms-playwright/chromium_headless_shell-1179/chrome-mac/headless_shell --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AcceptCHFrame,AutoExpandDetailsElement,AvoidUnnecessaryBeforeUnloadCheckSync,CertificateTransparencyComponentUpdater,DestroyProfileOnBrowserClose,DialMediaRouteProvider,ExtensionManifestV2Disabled,GlobalMediaControls,HttpsUpgrades,ImprovedCookieControls,LazyFrameLoading,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --enable-automation --enable-use-zoom-for-dsf=false --use-angle --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=/var/folders/c3/wqpd_6fx1p7blc1kv3kl60dm0000gp/T/playwright_chromiumdev_profile-csA7Zg --remote-debugging-pipe --no-startup-window
+<launched> pid=94486
+[pid=94486][err] [0702/055810.277405:ERROR:ui/gl/gl_display.cc:408] EGL Driver message (Error) eglQueryDeviceAttribEXT: Bad attribute.
+[pid=94486][err] [0702/055810.278296:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055810.278514:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055810.278617:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055810.364956:ERROR:ui/gl/gl_display.cc:408] EGL Driver message (Error) eglQueryDeviceAttribEXT: Bad attribute.
+[pid=94486][err] [0702/055810.365123:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055810.365162:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055810.365188:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055856.254835:ERROR:ui/gl/gl_display.cc:408] EGL Driver message (Error) eglQueryDeviceAttribEXT: Bad attribute.
+[pid=94486][err] [0702/055856.255167:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055856.255217:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055856.255253:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055856.317591:ERROR:ui/gl/gl_display.cc:408] EGL Driver message (Error) eglQueryDeviceAttribEXT: Bad attribute.
+[pid=94486][err] [0702/055856.317801:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055856.317841:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055856.317863:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486] <gracefully close start>
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 308, in main
+    app_logger.info("INF scraper run completed successfully.")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 266, in scrape_inf_data
+    # =======================================================================================
+                        ^^^^^^^^^^^^^^^^^
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 13432, in close
+    return mapping.from_maybe_impl(await self._impl_obj.close(reason=reason))
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_browser_context.py", line 619, in close
+    await self._channel.send("close", None, {"reason": reason})
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 69, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 558, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TargetClosedError: BrowserContext.close: Target page, context or browser has been closed
+Browser logs:
+
+<launching> /Users/nikicooke/Library/Caches/ms-playwright/chromium_headless_shell-1179/chrome-mac/headless_shell --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AcceptCHFrame,AutoExpandDetailsElement,AvoidUnnecessaryBeforeUnloadCheckSync,CertificateTransparencyComponentUpdater,DestroyProfileOnBrowserClose,DialMediaRouteProvider,ExtensionManifestV2Disabled,GlobalMediaControls,HttpsUpgrades,ImprovedCookieControls,LazyFrameLoading,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --enable-automation --enable-use-zoom-for-dsf=false --use-angle --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=/var/folders/c3/wqpd_6fx1p7blc1kv3kl60dm0000gp/T/playwright_chromiumdev_profile-csA7Zg --remote-debugging-pipe --no-startup-window
+<launched> pid=94486
+[pid=94486][err] [0702/055810.277405:ERROR:ui/gl/gl_display.cc:408] EGL Driver message (Error) eglQueryDeviceAttribEXT: Bad attribute.
+[pid=94486][err] [0702/055810.278296:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055810.278514:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055810.278617:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055810.364956:ERROR:ui/gl/gl_display.cc:408] EGL Driver message (Error) eglQueryDeviceAttribEXT: Bad attribute.
+[pid=94486][err] [0702/055810.365123:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055810.365162:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055810.365188:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055856.254835:ERROR:ui/gl/gl_display.cc:408] EGL Driver message (Error) eglQueryDeviceAttribEXT: Bad attribute.
+[pid=94486][err] [0702/055856.255167:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055856.255217:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055856.255253:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055856.317591:ERROR:ui/gl/gl_display.cc:408] EGL Driver message (Error) eglQueryDeviceAttribEXT: Bad attribute.
+[pid=94486][err] [0702/055856.317801:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055856.317841:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486][err] [0702/055856.317863:ERROR:ui/display/mac/cv_display_link_mac.mm:165] CVDisplayLinkCreateWithCGDisplay failed. CVReturn: -6670
+[pid=94486] <gracefully close start>
+2025-07-02 05:59:37,322 INFO Shutting down...
+2025-07-02 05:59:37,339 INFO Shutdown complete.
+2025-07-02 05:59:40,149 INFO Mode: Fetching YESTERDAY's INF data.
+2025-07-02 05:59:40,385 INFO Starting INF data collection for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 05:59:40,470 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 05:59:41,251 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:00:26,261 WARNING Attempt 1 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("#range-selector")
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 195, in scrape_inf_data
+    await expect(range_selector_container).to_be_visible(timeout=WAIT_TIMEOUT)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 20213, in to_be_visible
+    await self._impl_obj.to_be_visible(visible=visible, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 741, in to_be_visible
+    await self._expect_impl(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 75, in _expect_impl
+    raise AssertionError(
+AssertionError: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("#range-selector")
+
+2025-07-02 06:00:26,364 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:00:26,998 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:01:12,005 WARNING Attempt 2 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("#range-selector")
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 195, in scrape_inf_data
+    await expect(range_selector_container).to_be_visible(timeout=WAIT_TIMEOUT)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 20213, in to_be_visible
+    await self._impl_obj.to_be_visible(visible=visible, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 741, in to_be_visible
+    await self._expect_impl(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 75, in _expect_impl
+    raise AssertionError(
+AssertionError: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("#range-selector")
+
+2025-07-02 06:01:12,132 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:01:14,177 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:01:59,198 WARNING Attempt 3 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("#range-selector")
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 195, in scrape_inf_data
+    await expect(range_selector_container).to_be_visible(timeout=WAIT_TIMEOUT)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 20213, in to_be_visible
+    await self._impl_obj.to_be_visible(visible=visible, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 741, in to_be_visible
+    await self._expect_impl(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 75, in _expect_impl
+    raise AssertionError(
+AssertionError: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 45000ms
+  - waiting for locator("#range-selector")
+
+2025-07-02 06:01:59,205 ERROR All INF scrape attempts failed for Morrisons - Thornton-Cleveleys.
+2025-07-02 06:01:59,447 INFO Screenshot saved for debugging: output/Morrisons - Thornton-Cleveleys_inf_scrape_error_20250702_060159.png
+2025-07-02 06:02:00,285 ERROR INF scraper run failed: Could not retrieve data for the target store.
+2025-07-02 06:02:00,285 INFO Shutting down...
+2025-07-02 06:02:00,382 INFO Shutdown complete.
+2025-07-02 06:05:35,308 INFO Mode: Fetching YESTERDAY's INF data.
+2025-07-02 06:05:35,897 INFO Existing auth state found. Verifying session...
+2025-07-02 06:05:36,111 INFO Verifying session status by navigating to: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:05:37,082 WARNING Redirected to a sign-in page. Session is invalid.
+2025-07-02 06:05:37,089 INFO Login is required. Priming new master session...
+2025-07-02 06:05:37,089 INFO Priming master session
+2025-07-02 06:05:37,120 INFO Navigating to login page: https://sellercentral.amazon.co.uk/ap/signin?openid.pape.max_auth_age=900&openid.return_to=https%3A%2F%2Fsellercentral.amazon.co.uk%2Fsnowdash%3Fmons_sel_dir_mcid%3Damzn1.merchant.d.ADCTYK7ZDZ3AJG55TWLDKHVPEU7Q%26mons_sel_mkid%3DAM7DNVYQULIQ5%26mons_sel_dir_paid%3Damzn1.pa.d.AC5SCORDKVABET36OI32HPSR7K3A%26ignore_selection_changed%3Dtrue&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.assoc_handle=sc_uk_amazon_v2&openid.mode=checkid_setup&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&mons_redirect=sign_in&ssoResponse=eyJ6aXAiOiJERUYiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiQTI1NktXIn0.nIxDt6YB6oQ20szF9uPcUAsvJeUex6GYuJC79NFGEc_0g5C0RKA0hw.9vWwKREZ-4z4ZT8N._i6p8USp4eccQS46LYe47Th1ZBSFiWsiJhb2srIh7niZisOyGeT6kL2gCSLSTHRZwElkCN6AMqcX5kqsZ3H3PqYtouGCc34W2fhFaMc3dZ9eEonHaM0zMQ3bRaJXqehr4at6YdLv3Si3JMkh8vouqCAwr9Wq_jxu0nDxekiJtkdpVqOCTI68BM_Ce9DFBd_XS5NFOTw8.MEIbisUMWZaNBcRUH9M5nw
+2025-07-02 06:05:37,464 INFO Initial page loaded. Determining login flow...
+2025-07-02 06:05:37,490 INFO Flow 1: Interstitial 'Continue' <input> page detected. Clicking it.
+2025-07-02 06:05:38,524 INFO OTP is required.
+2025-07-02 06:05:40,040 INFO Login process appears fully successful.
+2025-07-02 06:05:40,046 INFO Login successful. Auth state saved to 'state.json'.
+2025-07-02 06:05:40,058 INFO Starting INF data collection for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 06:05:40,138 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:05:40,781 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:05:41,156 INFO Date picker UI is ready.
+2025-07-02 06:05:41,156 INFO Yesterday's data requested. Applying filters...
+2025-07-02 06:05:41,226 INFO Clicked 'Yesterday'. Waiting for page to reload...
+2025-07-02 06:06:26,238 WARNING Attempt 1 for INF scrape failed for Morrisons - Thornton-Cleveleys: Timeout 45000ms exceeded.
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 222, in scrape_inf_data
+    await page.wait_for_load_state('networkidle', timeout=WAIT_TIMEOUT)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 9071, in wait_for_load_state
+    await self._impl_obj.wait_for_load_state(state=state, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_page.py", line 576, in wait_for_load_state
+    return await self._main_frame.wait_for_load_state(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_frame.py", line 245, in wait_for_load_state
+    return await self._wait_for_load_state_impl(state, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_frame.py", line 273, in _wait_for_load_state_impl
+    await waiter.result()
+playwright._impl._errors.TimeoutError: Timeout 45000ms exceeded.
+2025-07-02 06:06:26,358 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:06:27,030 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:06:27,401 INFO Date picker UI is ready.
+2025-07-02 06:06:27,401 INFO Yesterday's data requested. Applying filters...
+2025-07-02 06:06:27,455 INFO Clicked 'Yesterday'. Waiting for page to reload...
+2025-07-02 06:07:12,463 WARNING Attempt 2 for INF scrape failed for Morrisons - Thornton-Cleveleys: Timeout 45000ms exceeded.
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 222, in scrape_inf_data
+    await page.wait_for_load_state('networkidle', timeout=WAIT_TIMEOUT)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 9071, in wait_for_load_state
+    await self._impl_obj.wait_for_load_state(state=state, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_page.py", line 576, in wait_for_load_state
+    return await self._main_frame.wait_for_load_state(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_frame.py", line 245, in wait_for_load_state
+    return await self._wait_for_load_state_impl(state, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_frame.py", line 273, in _wait_for_load_state_impl
+    await waiter.result()
+playwright._impl._errors.TimeoutError: Timeout 45000ms exceeded.
+2025-07-02 06:07:12,592 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:07:13,892 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:07:14,264 INFO Date picker UI is ready.
+2025-07-02 06:07:14,264 INFO Yesterday's data requested. Applying filters...
+2025-07-02 06:07:14,319 INFO Clicked 'Yesterday'. Waiting for page to reload...
+2025-07-02 06:07:59,330 WARNING Attempt 3 for INF scrape failed for Morrisons - Thornton-Cleveleys: Timeout 45000ms exceeded.
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 222, in scrape_inf_data
+    await page.wait_for_load_state('networkidle', timeout=WAIT_TIMEOUT)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 9071, in wait_for_load_state
+    await self._impl_obj.wait_for_load_state(state=state, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_page.py", line 576, in wait_for_load_state
+    return await self._main_frame.wait_for_load_state(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_frame.py", line 245, in wait_for_load_state
+    return await self._wait_for_load_state_impl(state, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_frame.py", line 273, in _wait_for_load_state_impl
+    await waiter.result()
+playwright._impl._errors.TimeoutError: Timeout 45000ms exceeded.
+2025-07-02 06:07:59,333 ERROR All INF scrape attempts failed for Morrisons - Thornton-Cleveleys.
+2025-07-02 06:07:59,509 INFO Screenshot saved for debugging: output/Morrisons - Thornton-Cleveleys_inf_scrape_error_20250702_060759.png
+2025-07-02 06:07:59,515 ERROR INF scraper run failed: Could not retrieve data for the target store.
+2025-07-02 06:07:59,515 INFO Shutting down...
+2025-07-02 06:07:59,556 INFO Shutdown complete.
+2025-07-02 06:10:42,937 INFO Mode: Fetching YESTERDAY's INF data.
+2025-07-02 06:10:43,510 INFO Existing auth state found. Verifying session...
+2025-07-02 06:10:43,687 INFO Verifying session status by navigating to: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:10:44,931 INFO Session check successful. Login not required.
+2025-07-02 06:10:44,953 INFO Session is valid. Proceeding with existing state.
+2025-07-02 06:10:44,954 INFO Starting INF data collection for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 06:10:45,020 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:10:45,542 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:10:46,286 INFO Date picker UI is ready.
+2025-07-02 06:10:46,287 INFO Yesterday's data requested. Applying filters...
+2025-07-02 06:10:46,403 INFO Waiting for spinner to appear after 'clicking Yesterday'...
+2025-07-02 06:10:51,410 WARNING Attempt 1 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 5000ms
+  - waiting for locator("kat-spinner")
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 230, in scrape_inf_data
+    await wait_for_table_reload(page, "clicking Yesterday")
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 200, in wait_for_table_reload
+    await expect(page.locator(spinner_selector)).to_be_visible(timeout=5000)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 20213, in to_be_visible
+    await self._impl_obj.to_be_visible(visible=visible, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 741, in to_be_visible
+    await self._expect_impl(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 75, in _expect_impl
+    raise AssertionError(
+AssertionError: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 5000ms
+  - waiting for locator("kat-spinner")
+
+2025-07-02 06:10:51,499 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:10:52,148 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:10:52,519 INFO Date picker UI is ready.
+2025-07-02 06:10:52,519 INFO Yesterday's data requested. Applying filters...
+2025-07-02 06:10:52,589 INFO Waiting for spinner to appear after 'clicking Yesterday'...
+2025-07-02 06:10:57,592 WARNING Attempt 2 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 5000ms
+  - waiting for locator("kat-spinner")
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 230, in scrape_inf_data
+    await wait_for_table_reload(page, "clicking Yesterday")
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 200, in wait_for_table_reload
+    await expect(page.locator(spinner_selector)).to_be_visible(timeout=5000)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 20213, in to_be_visible
+    await self._impl_obj.to_be_visible(visible=visible, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 741, in to_be_visible
+    await self._expect_impl(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 75, in _expect_impl
+    raise AssertionError(
+AssertionError: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 5000ms
+  - waiting for locator("kat-spinner")
+
+2025-07-02 06:10:57,691 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:10:58,314 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:10:58,709 INFO Date picker UI is ready.
+2025-07-02 06:10:58,709 INFO Yesterday's data requested. Applying filters...
+2025-07-02 06:10:58,789 INFO Waiting for spinner to appear after 'clicking Yesterday'...
+2025-07-02 06:11:03,793 WARNING Attempt 3 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 5000ms
+  - waiting for locator("kat-spinner")
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 230, in scrape_inf_data
+    await wait_for_table_reload(page, "clicking Yesterday")
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 200, in wait_for_table_reload
+    await expect(page.locator(spinner_selector)).to_be_visible(timeout=5000)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 20213, in to_be_visible
+    await self._impl_obj.to_be_visible(visible=visible, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 741, in to_be_visible
+    await self._expect_impl(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 75, in _expect_impl
+    raise AssertionError(
+AssertionError: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 5000ms
+  - waiting for locator("kat-spinner")
+
+2025-07-02 06:11:03,796 ERROR All INF scrape attempts failed for Morrisons - Thornton-Cleveleys.
+2025-07-02 06:11:03,938 INFO Screenshot saved for debugging: output/Morrisons - Thornton-Cleveleys_inf_scrape_error_20250702_061103.png
+2025-07-02 06:11:03,943 ERROR INF scraper run failed: Could not retrieve data for the target store.
+2025-07-02 06:11:03,943 INFO Shutting down...
+2025-07-02 06:11:03,980 INFO Shutdown complete.
+2025-07-02 06:17:03,797 INFO Mode: Fetching YESTERDAY's INF data.
+2025-07-02 06:17:04,408 INFO Existing auth state found. Verifying session...
+2025-07-02 06:17:04,713 INFO Verifying session status by navigating to: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:17:06,293 INFO Session check successful. Login not required.
+2025-07-02 06:17:06,307 INFO Session is valid. Proceeding with existing state.
+2025-07-02 06:17:06,307 INFO Starting INF data collection for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 06:17:06,390 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:17:07,016 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:17:07,891 INFO Date picker UI is ready.
+2025-07-02 06:17:07,892 INFO Yesterday's data requested. Applying filters...
+2025-07-02 06:17:52,915 WARNING Attempt 1 for INF scrape failed for Morrisons - Thornton-Cleveleys: Timeout 45000ms exceeded while waiting for event "response"
+=========================== logs ===========================
+waiting for response **/snow-inventory/api/inventory-insights/items
+============================================================
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 219, in scrape_inf_data
+    async with page.expect_response(api_url_pattern, timeout=WAIT_TIMEOUT) as resp_info:
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_async_base.py", line 60, in __aexit__
+    await self._event.value
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_async_base.py", line 35, in value
+    return mapping.from_maybe_impl(await self._future)
+                                   ^^^^^^^^^^^^^^^^^^
+playwright._impl._errors.TimeoutError: Timeout 45000ms exceeded while waiting for event "response"
+=========================== logs ===========================
+waiting for response **/snow-inventory/api/inventory-insights/items
+============================================================
+2025-07-02 06:17:53,025 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:17:54,017 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:17:54,678 INFO Date picker UI is ready.
+2025-07-02 06:17:54,679 INFO Yesterday's data requested. Applying filters...
+2025-07-02 06:18:39,707 WARNING Attempt 2 for INF scrape failed for Morrisons - Thornton-Cleveleys: Timeout 45000ms exceeded while waiting for event "response"
+=========================== logs ===========================
+waiting for response **/snow-inventory/api/inventory-insights/items
+============================================================
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 219, in scrape_inf_data
+    async with page.expect_response(api_url_pattern, timeout=WAIT_TIMEOUT) as resp_info:
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_async_base.py", line 60, in __aexit__
+    await self._event.value
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_async_base.py", line 35, in value
+    return mapping.from_maybe_impl(await self._future)
+                                   ^^^^^^^^^^^^^^^^^^
+playwright._impl._errors.TimeoutError: Timeout 45000ms exceeded while waiting for event "response"
+=========================== logs ===========================
+waiting for response **/snow-inventory/api/inventory-insights/items
+============================================================
+2025-07-02 06:18:39,806 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:18:40,535 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:18:40,910 INFO Date picker UI is ready.
+2025-07-02 06:18:40,910 INFO Yesterday's data requested. Applying filters...
+2025-07-02 06:19:25,924 WARNING Attempt 3 for INF scrape failed for Morrisons - Thornton-Cleveleys: Timeout 45000ms exceeded while waiting for event "response"
+=========================== logs ===========================
+waiting for response **/snow-inventory/api/inventory-insights/items
+============================================================
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 219, in scrape_inf_data
+    async with page.expect_response(api_url_pattern, timeout=WAIT_TIMEOUT) as resp_info:
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_async_base.py", line 60, in __aexit__
+    await self._event.value
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_async_base.py", line 35, in value
+    return mapping.from_maybe_impl(await self._future)
+                                   ^^^^^^^^^^^^^^^^^^
+playwright._impl._errors.TimeoutError: Timeout 45000ms exceeded while waiting for event "response"
+=========================== logs ===========================
+waiting for response **/snow-inventory/api/inventory-insights/items
+============================================================
+2025-07-02 06:19:25,932 ERROR All INF scrape attempts failed for Morrisons - Thornton-Cleveleys.
+2025-07-02 06:19:26,115 INFO Screenshot saved for debugging: output/Morrisons - Thornton-Cleveleys_inf_scrape_error_20250702_061925.png
+2025-07-02 06:19:26,121 ERROR INF scraper run failed: Could not retrieve data for the target store.
+2025-07-02 06:19:26,122 INFO Shutting down...
+2025-07-02 06:19:26,166 INFO Shutdown complete.
+2025-07-02 06:21:53,283 INFO Mode: Fetching YESTERDAY's INF data.
+2025-07-02 06:21:54,894 INFO Existing auth state found. Verifying session...
+2025-07-02 06:21:55,185 INFO Verifying session status by navigating to: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:21:56,420 INFO Session check successful. Login not required.
+2025-07-02 06:21:56,432 INFO Session is valid. Proceeding with existing state.
+2025-07-02 06:21:56,433 INFO Starting INF data collection for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 06:21:56,510 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:21:57,191 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:21:57,594 INFO Date picker UI is ready.
+2025-07-02 06:21:57,594 INFO Yesterday's data requested. Applying filters...
+2025-07-02 06:21:57,597 INFO Capturing initial table state. First row: '...'
+2025-07-02 06:21:57,688 INFO Action performed. Waiting for table content to change...
+2025-07-02 06:21:57,688 WARNING Attempt 1 for INF scrape failed for Morrisons - Thornton-Cleveleys: Page.wait_for_function() takes 2 positional arguments but 3 positional arguments (and 1 keyword-only argument) were given
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 253, in scrape_inf_data
+    await wait_for_table_change(page, table_body_selector, lambda: yesterday_link.click())
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 208, in wait_for_table_change
+    await page.wait_for_function(
+          ^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Page.wait_for_function() takes 2 positional arguments but 3 positional arguments (and 1 keyword-only argument) were given
+2025-07-02 06:21:57,765 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:21:58,418 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:21:58,797 INFO Date picker UI is ready.
+2025-07-02 06:21:58,797 INFO Yesterday's data requested. Applying filters...
+2025-07-02 06:21:58,802 INFO Capturing initial table state. First row: '...'
+2025-07-02 06:21:58,850 INFO Action performed. Waiting for table content to change...
+2025-07-02 06:21:58,850 WARNING Attempt 2 for INF scrape failed for Morrisons - Thornton-Cleveleys: Page.wait_for_function() takes 2 positional arguments but 3 positional arguments (and 1 keyword-only argument) were given
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 253, in scrape_inf_data
+    await wait_for_table_change(page, table_body_selector, lambda: yesterday_link.click())
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 208, in wait_for_table_change
+    await page.wait_for_function(
+          ^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Page.wait_for_function() takes 2 positional arguments but 3 positional arguments (and 1 keyword-only argument) were given
+2025-07-02 06:21:58,925 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:21:59,469 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:21:59,954 INFO Date picker UI is ready.
+2025-07-02 06:21:59,954 INFO Yesterday's data requested. Applying filters...
+2025-07-02 06:21:59,959 INFO Capturing initial table state. First row: '...'
+2025-07-02 06:22:00,021 INFO Action performed. Waiting for table content to change...
+2025-07-02 06:22:00,021 WARNING Attempt 3 for INF scrape failed for Morrisons - Thornton-Cleveleys: Page.wait_for_function() takes 2 positional arguments but 3 positional arguments (and 1 keyword-only argument) were given
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 253, in scrape_inf_data
+    await wait_for_table_change(page, table_body_selector, lambda: yesterday_link.click())
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 208, in wait_for_table_change
+    await page.wait_for_function(
+          ^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Page.wait_for_function() takes 2 positional arguments but 3 positional arguments (and 1 keyword-only argument) were given
+2025-07-02 06:22:00,022 ERROR All INF scrape attempts failed for Morrisons - Thornton-Cleveleys.
+2025-07-02 06:22:00,102 INFO Screenshot saved for debugging: output/Morrisons - Thornton-Cleveleys_inf_scrape_error_20250702_062200.png
+2025-07-02 06:22:00,107 ERROR INF scraper run failed: Could not retrieve data for the target store.
+2025-07-02 06:22:00,107 INFO Shutting down...
+2025-07-02 06:22:00,140 INFO Shutdown complete.
+2025-07-02 06:24:21,517 INFO Mode: Fetching YESTERDAY's INF data.
+2025-07-02 06:24:22,061 INFO Existing auth state found. Verifying session...
+2025-07-02 06:24:22,252 INFO Verifying session status by navigating to: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:24:23,421 INFO Session check successful. Login not required.
+2025-07-02 06:24:23,429 INFO Session is valid. Proceeding with existing state.
+2025-07-02 06:24:23,430 INFO Starting INF data collection for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 06:24:23,495 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:24:24,108 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:24:24,987 INFO Date picker UI is ready.
+2025-07-02 06:24:44,994 WARNING Attempt 1 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 20000ms
+  - waiting for locator("table.imp-table tbody tr").first
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 250, in scrape_inf_data
+    await expect(page.locator(f"{table_body_selector} tr").first).to_be_visible(timeout=20000)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 20213, in to_be_visible
+    await self._impl_obj.to_be_visible(visible=visible, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 741, in to_be_visible
+    await self._expect_impl(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 75, in _expect_impl
+    raise AssertionError(
+AssertionError: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 20000ms
+  - waiting for locator("table.imp-table tbody tr").first
+
+2025-07-02 06:24:45,108 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:24:45,637 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:24:46,606 INFO Date picker UI is ready.
+2025-07-02 06:25:06,611 WARNING Attempt 2 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 20000ms
+  - waiting for locator("table.imp-table tbody tr").first
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 250, in scrape_inf_data
+    await expect(page.locator(f"{table_body_selector} tr").first).to_be_visible(timeout=20000)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 20213, in to_be_visible
+    await self._impl_obj.to_be_visible(visible=visible, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 741, in to_be_visible
+    await self._expect_impl(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 75, in _expect_impl
+    raise AssertionError(
+AssertionError: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 20000ms
+  - waiting for locator("table.imp-table tbody tr").first
+
+2025-07-02 06:25:06,700 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:25:07,328 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:25:08,209 INFO Date picker UI is ready.
+2025-07-02 06:25:28,239 WARNING Attempt 3 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 20000ms
+  - waiting for locator("table.imp-table tbody tr").first
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 250, in scrape_inf_data
+    await expect(page.locator(f"{table_body_selector} tr").first).to_be_visible(timeout=20000)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 20213, in to_be_visible
+    await self._impl_obj.to_be_visible(visible=visible, timeout=timeout)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 741, in to_be_visible
+    await self._expect_impl(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_assertions.py", line 75, in _expect_impl
+    raise AssertionError(
+AssertionError: Locator expected to be visible
+Actual value: <element(s) not found> 
+Call log:
+  - Expect "to_be_visible" with timeout 20000ms
+  - waiting for locator("table.imp-table tbody tr").first
+
+2025-07-02 06:25:28,247 ERROR All INF scrape attempts failed for Morrisons - Thornton-Cleveleys.
+2025-07-02 06:25:28,416 INFO Screenshot saved for debugging: output/Morrisons - Thornton-Cleveleys_inf_scrape_error_20250702_062528.png
+2025-07-02 06:25:28,441 ERROR INF scraper run failed: Could not retrieve data for the target store.
+2025-07-02 06:25:28,441 INFO Shutting down...
+2025-07-02 06:25:28,494 INFO Shutdown complete.
+2025-07-02 06:26:45,784 INFO Mode: Fetching YESTERDAY's INF data.
+2025-07-02 06:26:46,315 INFO Existing auth state found. Verifying session...
+2025-07-02 06:26:46,552 INFO Verifying session status by navigating to: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:26:47,723 INFO Session check successful. Login not required.
+2025-07-02 06:26:47,730 INFO Session is valid. Proceeding with existing state.
+2025-07-02 06:26:47,730 INFO Starting INF data collection for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 06:26:47,799 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:26:48,443 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:26:48,815 INFO Date picker UI is ready.
+2025-07-02 06:26:48,815 INFO Yesterday's data requested. Applying 'Yesterday' filter...
+2025-07-02 06:26:48,817 INFO Capturing initial table state. First row: '...'
+2025-07-02 06:26:48,903 INFO Action performed. Waiting for table content to change...
+2025-07-02 06:26:48,903 WARNING Attempt 1 for INF scrape failed for Morrisons - Thornton-Cleveleys: Page.wait_for_function() takes 2 positional arguments but 3 positional arguments (and 1 keyword-only argument) were given
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 243, in scrape_inf_data
+    await wait_for_table_change(page, table_body_selector, lambda: yesterday_link.click())
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 206, in wait_for_table_change
+    await page.wait_for_function(
+          ^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Page.wait_for_function() takes 2 positional arguments but 3 positional arguments (and 1 keyword-only argument) were given
+2025-07-02 06:26:48,977 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:26:49,651 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:26:50,028 INFO Date picker UI is ready.
+2025-07-02 06:26:50,028 INFO Yesterday's data requested. Applying 'Yesterday' filter...
+2025-07-02 06:26:50,033 INFO Capturing initial table state. First row: '...'
+2025-07-02 06:26:50,122 INFO Action performed. Waiting for table content to change...
+2025-07-02 06:26:50,122 WARNING Attempt 2 for INF scrape failed for Morrisons - Thornton-Cleveleys: Page.wait_for_function() takes 2 positional arguments but 3 positional arguments (and 1 keyword-only argument) were given
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 243, in scrape_inf_data
+    await wait_for_table_change(page, table_body_selector, lambda: yesterday_link.click())
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 206, in wait_for_table_change
+    await page.wait_for_function(
+          ^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Page.wait_for_function() takes 2 positional arguments but 3 positional arguments (and 1 keyword-only argument) were given
+2025-07-02 06:26:50,198 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:26:50,771 INFO Waiting for the date picker UI to become visible...
+2025-07-02 06:26:51,153 INFO Date picker UI is ready.
+2025-07-02 06:26:51,153 INFO Yesterday's data requested. Applying 'Yesterday' filter...
+2025-07-02 06:26:51,156 INFO Capturing initial table state. First row: '...'
+2025-07-02 06:26:51,225 INFO Action performed. Waiting for table content to change...
+2025-07-02 06:26:51,226 WARNING Attempt 3 for INF scrape failed for Morrisons - Thornton-Cleveleys: Page.wait_for_function() takes 2 positional arguments but 3 positional arguments (and 1 keyword-only argument) were given
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 243, in scrape_inf_data
+    await wait_for_table_change(page, table_body_selector, lambda: yesterday_link.click())
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 206, in wait_for_table_change
+    await page.wait_for_function(
+          ^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Page.wait_for_function() takes 2 positional arguments but 3 positional arguments (and 1 keyword-only argument) were given
+2025-07-02 06:26:51,226 ERROR All INF scrape attempts failed for Morrisons - Thornton-Cleveleys.
+2025-07-02 06:26:51,306 INFO Screenshot saved for debugging: output/Morrisons - Thornton-Cleveleys_inf_scrape_error_20250702_062651.png
+2025-07-02 06:26:51,312 ERROR INF scraper run failed: Could not retrieve data for the target store.
+2025-07-02 06:26:51,312 INFO Shutting down...
+2025-07-02 06:26:51,339 INFO Shutdown complete.
+2025-07-02 06:30:48,012 INFO Mode: Fetching YESTERDAY's INF data.
+2025-07-02 06:30:48,682 INFO Existing auth state found. Verifying session...
+2025-07-02 06:30:48,908 INFO Verifying session status by navigating to: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:30:50,579 INFO Session check successful. Login not required.
+2025-07-02 06:30:50,588 INFO Session is valid. Proceeding with existing state.
+2025-07-02 06:30:50,588 INFO Starting INF data collection for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 06:30:50,657 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:30:51,639 INFO Date picker UI is ready.
+2025-07-02 06:30:51,640 INFO Yesterday's data requested. Applying 'Yesterday' filter...
+2025-07-02 06:30:51,644 INFO Capturing initial table state. First row: '...'
+2025-07-02 06:30:51,708 INFO Action performed. Waiting for table content to change...
+2025-07-02 06:30:53,502 INFO Table content has changed. Reload successful.
+2025-07-02 06:30:53,502 INFO Checking for data rows in the table...
+2025-07-02 06:30:53,507 INFO Data rows found. Proceeding to scrape.
+2025-07-02 06:30:53,507 INFO Applying '250 results per page' filter...
+2025-07-02 06:30:53,512 INFO Capturing initial table state. First row: '108413093Loading...B01MDOBUCC110%154496%...'
+2025-07-02 06:30:53,577 WARNING Attempt 1 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator.click: Error: strict mode violation: locator("span[data-action=\"a-dropdown-button\"]") resolved to 4 elements:
+    1) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span").filter(has_text=re.compile(r"^UnfilteredLoading\.\.\.Unfiltered$")).locator("span").nth(2)
+    2) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span").filter(has_text=re.compile(r"^UnfilteredMondayTuesdayWednesdayThursdayFridaySaturdaySundayUnfiltered$")).locator("span").nth(2)
+    3) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span:nth-child(4) > .a-dropdown-container > .a-button > .a-button-inner > .a-button-text")
+    4) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span").filter(has_text=re.compile(r"^10 results per page$")).nth(2)
+
+Call log:
+  - waiting for locator("span[data-action=\"a-dropdown-button\"]")
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 283, in scrape_inf_data
+    await wait_for_table_change(
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 211, in wait_for_table_change
+    await action_to_perform()
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 280, in set_page_size
+    await results_dropdown.click()
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 15459, in click
+    await self._impl_obj.click(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_locator.py", line 160, in click
+    return await self._frame.click(self._selector, strict=True, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_frame.py", line 521, in click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 69, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 558, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.Error: Locator.click: Error: strict mode violation: locator("span[data-action=\"a-dropdown-button\"]") resolved to 4 elements:
+    1) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span").filter(has_text=re.compile(r"^UnfilteredLoading\.\.\.Unfiltered$")).locator("span").nth(2)
+    2) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span").filter(has_text=re.compile(r"^UnfilteredMondayTuesdayWednesdayThursdayFridaySaturdaySundayUnfiltered$")).locator("span").nth(2)
+    3) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span:nth-child(4) > .a-dropdown-container > .a-button > .a-button-inner > .a-button-text")
+    4) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span").filter(has_text=re.compile(r"^10 results per page$")).nth(2)
+
+Call log:
+  - waiting for locator("span[data-action=\"a-dropdown-button\"]")
+
+2025-07-02 06:30:53,646 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:30:54,663 INFO Date picker UI is ready.
+2025-07-02 06:30:54,663 INFO Yesterday's data requested. Applying 'Yesterday' filter...
+2025-07-02 06:30:54,665 INFO Capturing initial table state. First row: '...'
+2025-07-02 06:30:54,717 INFO Action performed. Waiting for table content to change...
+2025-07-02 06:30:57,550 INFO Table content has changed. Reload successful.
+2025-07-02 06:30:57,550 INFO Checking for data rows in the table...
+2025-07-02 06:30:57,555 INFO Data rows found. Proceeding to scrape.
+2025-07-02 06:30:57,555 INFO Applying '250 results per page' filter...
+2025-07-02 06:30:57,559 INFO Capturing initial table state. First row: '108413093Loading...B01MDOBUCC110%154496%...'
+2025-07-02 06:30:57,622 WARNING Attempt 2 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator.click: Error: strict mode violation: locator("span[data-action=\"a-dropdown-button\"]") resolved to 4 elements:
+    1) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span").filter(has_text=re.compile(r"^UnfilteredLoading\.\.\.Unfiltered$")).locator("span").nth(2)
+    2) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span").filter(has_text=re.compile(r"^UnfilteredMondayTuesdayWednesdayThursdayFridaySaturdaySundayUnfiltered$")).locator("span").nth(2)
+    3) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span:nth-child(4) > .a-dropdown-container > .a-button > .a-button-inner > .a-button-text")
+    4) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span").filter(has_text=re.compile(r"^10 results per page$")).nth(2)
+
+Call log:
+  - waiting for locator("span[data-action=\"a-dropdown-button\"]")
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 283, in scrape_inf_data
+    await wait_for_table_change(
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 211, in wait_for_table_change
+    await action_to_perform()
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 280, in set_page_size
+    await results_dropdown.click()
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 15459, in click
+    await self._impl_obj.click(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_locator.py", line 160, in click
+    return await self._frame.click(self._selector, strict=True, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_frame.py", line 521, in click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 69, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 558, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.Error: Locator.click: Error: strict mode violation: locator("span[data-action=\"a-dropdown-button\"]") resolved to 4 elements:
+    1) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span").filter(has_text=re.compile(r"^UnfilteredLoading\.\.\.Unfiltered$")).locator("span").nth(2)
+    2) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span").filter(has_text=re.compile(r"^UnfilteredMondayTuesdayWednesdayThursdayFridaySaturdaySundayUnfiltered$")).locator("span").nth(2)
+    3) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span:nth-child(4) > .a-dropdown-container > .a-button > .a-button-inner > .a-button-text")
+    4) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span").filter(has_text=re.compile(r"^10 results per page$")).nth(2)
+
+Call log:
+  - waiting for locator("span[data-action=\"a-dropdown-button\"]")
+
+2025-07-02 06:30:57,691 INFO Navigating to Inventory Insights URL: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:30:58,722 INFO Date picker UI is ready.
+2025-07-02 06:30:58,723 INFO Yesterday's data requested. Applying 'Yesterday' filter...
+2025-07-02 06:30:58,725 INFO Capturing initial table state. First row: '...'
+2025-07-02 06:30:58,767 INFO Action performed. Waiting for table content to change...
+2025-07-02 06:31:00,558 INFO Table content has changed. Reload successful.
+2025-07-02 06:31:00,559 INFO Checking for data rows in the table...
+2025-07-02 06:31:00,563 INFO Data rows found. Proceeding to scrape.
+2025-07-02 06:31:00,563 INFO Applying '250 results per page' filter...
+2025-07-02 06:31:00,567 INFO Capturing initial table state. First row: '108413093Loading...B01MDOBUCC110%154496%...'
+2025-07-02 06:31:00,629 WARNING Attempt 3 for INF scrape failed for Morrisons - Thornton-Cleveleys: Locator.click: Error: strict mode violation: locator("span[data-action=\"a-dropdown-button\"]") resolved to 4 elements:
+    1) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span").filter(has_text=re.compile(r"^UnfilteredLoading\.\.\.Unfiltered$")).locator("span").nth(2)
+    2) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span").filter(has_text=re.compile(r"^UnfilteredMondayTuesdayWednesdayThursdayFridaySaturdaySundayUnfiltered$")).locator("span").nth(2)
+    3) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span:nth-child(4) > .a-dropdown-container > .a-button > .a-button-inner > .a-button-text")
+    4) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span").filter(has_text=re.compile(r"^10 results per page$")).nth(2)
+
+Call log:
+  - waiting for locator("span[data-action=\"a-dropdown-button\"]")
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 283, in scrape_inf_data
+    await wait_for_table_change(
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 211, in wait_for_table_change
+    await action_to_perform()
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 280, in set_page_size
+    await results_dropdown.click()
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 15459, in click
+    await self._impl_obj.click(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_locator.py", line 160, in click
+    return await self._frame.click(self._selector, strict=True, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_frame.py", line 521, in click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 69, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 558, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.Error: Locator.click: Error: strict mode violation: locator("span[data-action=\"a-dropdown-button\"]") resolved to 4 elements:
+    1) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span").filter(has_text=re.compile(r"^UnfilteredLoading\.\.\.Unfiltered$")).locator("span").nth(2)
+    2) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span").filter(has_text=re.compile(r"^UnfilteredMondayTuesdayWednesdayThursdayFridaySaturdaySundayUnfiltered$")).locator("span").nth(2)
+    3) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span:nth-child(4) > .a-dropdown-container > .a-button > .a-button-inner > .a-button-text")
+    4) <span tabindex="0" role="button" aria-hidden="true" data-action="a-dropdown-button" class="a-button-text a-declarative">…</span> aka locator("span").filter(has_text=re.compile(r"^10 results per page$")).nth(2)
+
+Call log:
+  - waiting for locator("span[data-action=\"a-dropdown-button\"]")
+
+2025-07-02 06:31:00,631 ERROR All INF scrape attempts failed for Morrisons - Thornton-Cleveleys.
+2025-07-02 06:31:00,708 INFO Screenshot saved for debugging: output/Morrisons - Thornton-Cleveleys_inf_scrape_error_20250702_063100.png
+2025-07-02 06:31:00,712 ERROR INF scraper run failed: Could not retrieve data for the target store.
+2025-07-02 06:31:00,712 INFO Shutting down...
+2025-07-02 06:31:00,733 INFO Shutdown complete.
+2025-07-02 06:34:06,051 INFO Mode: Fetching YESTERDAY's INF data.
+2025-07-02 06:34:06,695 INFO Found existing auth; verifying...
+2025-07-02 06:34:06,969 INFO Verifying session status by navigating to: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:34:08,374 INFO Session check successful. Login not required.
+2025-07-02 06:34:08,380 INFO Reusing existing session.
+2025-07-02 06:34:08,381 INFO Collecting INF data for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 06:34:08,443 INFO Navigating to https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:34:09,494 INFO Filtering 'Yesterday'
+2025-07-02 06:34:09,499 INFO Initial first-row text: '...'
+2025-07-02 06:34:10,579 INFO Waiting for table content to change...
+2025-07-02 06:34:13,170 INFO Table content has changed.
+2025-07-02 06:34:13,180 INFO Setting 250 results per page
+2025-07-02 06:34:13,185 INFO Initial first-row text: '108413093Loading...B01MDOBUCC110%154496%...'
+2025-07-02 06:34:14,220 INFO Waiting for table content to change...
+2025-07-02 06:34:14,227 INFO Table content has changed.
+2025-07-02 06:34:14,227 INFO Sorting by INF Units
+2025-07-02 06:34:14,238 INFO Initial first-row text: '108413093Whole CucumberB01MDOBUCC110%154496%...'
+2025-07-02 06:34:15,276 INFO Waiting for table content to change...
+2025-07-02 06:34:15,283 INFO Table content has changed.
+2025-07-02 06:34:15,294 INFO Found 10 rows
+2025-07-02 06:34:15,381 INFO Scraped 10 INF items for Morrisons - Thornton-Cleveleys
+2025-07-02 06:34:16,572 INFO Posted INF report to chat.
+2025-07-02 06:34:16,574 INFO INF scraper completed with results.
+2025-07-02 06:34:16,575 INFO Shutting down browser/playwright...
+2025-07-02 06:34:16,609 INFO Shutdown complete.
+2025-07-02 06:41:48,252 INFO Mode: Fetching YESTERDAY's INF data.
+2025-07-02 06:41:48,843 INFO Using existing session; verifying...
+2025-07-02 06:41:49,104 INFO Verifying session by visiting: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:41:50,519 INFO Reusing valid session.
+2025-07-02 06:41:50,519 INFO Scraping INF for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 06:41:51,590 INFO Applying 'Yesterday' filter
+2025-07-02 06:41:51,597 INFO Initial row: '...'
+2025-07-02 06:41:52,676 INFO Waiting for table update...
+2025-07-02 06:41:54,245 INFO Table updated.
+2025-07-02 06:41:54,251 INFO Setting 250 results per page
+2025-07-02 06:41:54,257 INFO Initial row: '108413093Loading...B01MDOBUCC110%154496%...'
+2025-07-02 06:41:55,291 INFO Waiting for table update...
+2025-07-02 06:41:55,703 INFO Table updated.
+2025-07-02 06:41:55,703 INFO Sorting by INF Units
+2025-07-02 06:41:55,712 INFO Initial row: '108413093Whole CucumberB01MDOBUCC110%154496%...'
+2025-07-02 06:41:56,779 INFO Waiting for table update...
+2025-07-02 06:41:56,787 INFO Table updated.
+2025-07-02 06:41:56,799 INFO Found 123 rows
+2025-07-02 06:41:58,839 INFO Posted INF report to chat.
+2025-07-02 06:41:58,842 INFO INF scraper completed with results.
+2025-07-02 06:41:58,842 INFO Shutting down...
+2025-07-02 06:41:58,884 INFO Shutdown complete.
+2025-07-02 06:44:28,634 INFO Mode: Fetching YESTERDAY's INF data.
+2025-07-02 06:44:29,206 INFO Using existing session; verifying...
+2025-07-02 06:44:29,438 INFO Verifying session by visiting: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:44:30,717 INFO Reusing valid session.
+2025-07-02 06:44:30,717 INFO Scraping INF for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 06:44:31,769 INFO Initial row: '...'
+2025-07-02 06:44:32,840 INFO Waiting for table update...
+2025-07-02 06:44:34,540 INFO Table updated.
+2025-07-02 06:44:34,551 INFO Initial row: '108413093Loading...B01MDOBUCC110%154496%...'
+2025-07-02 06:44:35,580 INFO Waiting for table update...
+2025-07-02 06:44:35,587 INFO Table updated.
+2025-07-02 06:44:35,596 INFO Initial row: '108413093Whole CucumberB01MDOBUCC110%154496%...'
+2025-07-02 06:44:36,661 INFO Waiting for table update...
+2025-07-02 06:44:36,668 INFO Table updated.
+2025-07-02 06:44:36,680 INFO Found 123 rows
+2025-07-02 06:44:38,952 INFO Posted webhook part 1/3 successfully.
+2025-07-02 06:44:40,105 INFO Posted webhook part 2/3 successfully.
+2025-07-02 06:44:41,016 INFO Posted webhook part 3/3 successfully.
+2025-07-02 06:44:41,018 INFO INF scraper completed with results.
+2025-07-02 06:44:41,018 INFO Shutting down...
+2025-07-02 06:44:41,058 INFO Shutdown complete.
+2025-07-02 06:47:39,031 INFO Mode: Fetching YESTERDAY's INF data.
+2025-07-02 06:47:39,720 INFO Using existing session; verifying…
+2025-07-02 06:47:39,904 INFO Verifying session by visiting: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 06:47:41,241 INFO Reusing valid session.
+2025-07-02 06:47:41,242 INFO Scraping INF for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 06:47:42,278 INFO Applying 'Yesterday' filter
+2025-07-02 06:47:42,281 INFO Initial row: '...'
+2025-07-02 06:47:43,362 INFO Waiting for table update...
+2025-07-02 06:47:45,388 INFO Table updated.
+2025-07-02 06:47:45,393 INFO Setting 250 results per page
+2025-07-02 06:47:45,405 INFO Initial row: '108413093Loading...B01MDOBUCC110%154496%...'
+2025-07-02 06:47:46,432 INFO Waiting for table update...
+2025-07-02 06:47:46,858 INFO Table updated.
+2025-07-02 06:47:46,858 INFO Sorting by INF Units
+2025-07-02 06:47:46,881 INFO Initial row: '108413093Whole CucumberB01MDOBUCC110%154496%...'
+2025-07-02 06:47:47,928 INFO Waiting for table update...
+2025-07-02 06:47:47,937 INFO Table updated.
+2025-07-02 06:47:47,951 INFO Found 123 rows
+2025-07-02 06:47:50,583 ERROR Webhook error 400: {
+  "error": {
+    "code": 400,
+    "message": "Request contains an invalid argument.",
+    "status": "INVALID_ARGUMENT"
+  }
+}
+
+2025-07-02 06:47:50,586 INFO INF scraper completed with results.
+2025-07-02 06:47:50,587 INFO Shutting down…
+2025-07-02 06:47:50,631 INFO Shutdown complete.
+2025-07-02 06:49:45,181 INFO Mode: Fetching YESTERDAY's INF data.
+2025-07-02 06:49:56,127 INFO Posted batch 1 to chat.
+2025-07-02 06:49:57,113 INFO Posted batch 2 to chat.
+2025-07-02 06:49:58,485 INFO Posted batch 3 to chat.
+2025-07-02 18:23:12,888 INFO Mode: Fetching YESTERDAY's INF data.
+2025-07-02 18:23:14,385 INFO Using existing session; verifying…
+2025-07-02 18:23:14,561 INFO Verifying session by visiting: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 18:23:15,493 WARNING Redirected to sign-in; need to re-login.
+2025-07-02 18:23:15,507 INFO Login required; performing login.
+2025-07-02 18:23:15,531 INFO Logging in at https://sellercentral.amazon.co.uk/ap/signin?openid.pape.max_auth_age=900&openid.return_to=https%3A%2F%2Fsellercentral.amazon.co.uk%2Fsnowdash%3Fmons_sel_dir_mcid%3Damzn1.merchant.d.ADCTYK7ZDZ3AJG55TWLDKHVPEU7Q%26mons_sel_mkid%3DAM7DNVYQULIQ5%26mons_sel_dir_paid%3Damzn1.pa.d.AC5SCORDKVABET36OI32HPSR7K3A%26ignore_selection_changed%3Dtrue&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.assoc_handle=sc_uk_amazon_v2&openid.mode=checkid_setup&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&mons_redirect=sign_in&ssoResponse=eyJ6aXAiOiJERUYiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiQTI1NktXIn0.nIxDt6YB6oQ20szF9uPcUAsvJeUex6GYuJC79NFGEc_0g5C0RKA0hw.9vWwKREZ-4z4ZT8N._i6p8USp4eccQS46LYe47Th1ZBSFiWsiJhb2srIh7niZisOyGeT6kL2gCSLSTHRZwElkCN6AMqcX5kqsZ3H3PqYtouGCc34W2fhFaMc3dZ9eEonHaM0zMQ3bRaJXqehr4at6YdLv3Si3JMkh8vouqCAwr9Wq_jxu0nDxekiJtkdpVqOCTI68BM_Ce9DFBd_XS5NFOTw8.MEIbisUMWZaNBcRUH9M5nw
+2025-07-02 18:23:17,872 INFO Login successful.
+2025-07-02 18:23:17,880 INFO Stored new session state.
+2025-07-02 18:23:17,886 INFO Scraping INF for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 18:23:19,020 INFO Applying 'Yesterday' filter
+2025-07-02 18:23:19,023 INFO Initial row: '...'
+2025-07-02 18:23:20,073 INFO Waiting for table update...
+2025-07-02 18:23:21,315 INFO Table updated.
+2025-07-02 18:23:21,322 INFO Setting 250 results per page
+2025-07-02 18:23:21,328 INFO Initial row: '108370943Loading...B01EYGWIGO11100%716813%...'
+2025-07-02 18:23:22,352 INFO Waiting for table update...
+2025-07-02 18:23:22,361 INFO Table updated.
+2025-07-02 18:23:22,361 INFO Sorting by INF Units
+2025-07-02 18:23:22,372 INFO Initial row: '108370943Iceberg LettuceB01EYGWIGO11100%716813%...'
+2025-07-02 18:23:23,438 INFO Waiting for table update...
+2025-07-02 18:23:23,444 INFO Table updated.
+2025-07-02 18:23:23,456 INFO Found 123 rows
+2025-07-02 18:23:26,411 INFO Posted batch 1 to chat.
+2025-07-02 18:23:27,312 INFO Posted batch 2 to chat.
+2025-07-02 18:23:28,184 INFO Posted batch 3 to chat.
+2025-07-02 18:23:29,083 INFO Posted batch 4 to chat.
+2025-07-02 18:23:29,847 INFO Posted batch 5 to chat.
+2025-07-02 18:23:29,848 INFO INF scraper completed with results.
+2025-07-02 18:23:29,849 INFO Shutting down…
+2025-07-02 18:23:29,969 INFO Shutdown complete.
+2025-07-02 18:24:58,342 INFO Mode: Fetching TODAY's INF data.
+2025-07-02 18:24:58,966 INFO Using existing session; verifying…
+2025-07-02 18:24:59,217 INFO Verifying session by visiting: https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/?ref_=mp_home_logo_xx&cor=mmp_EU&mons_sel_dir_mcid=amzn1.merchant.d.PMPSTY6I7DNDVHT7PKBFHYWZ4M&mons_sel_mkid=AM7DNVYQULIQ5
+2025-07-02 18:25:00,981 INFO Reusing valid session.
+2025-07-02 18:25:00,982 INFO Scraping INF for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 18:25:04,433 INFO Sorting by INF Units
+2025-07-02 18:25:04,447 INFO Initial row: '108370943Loading...B01EYGWIGO11100%716813%...'
+2025-07-02 18:25:05,564 INFO Waiting for table update...
+2025-07-02 18:25:05,585 INFO Table updated.
+2025-07-02 18:25:05,593 INFO Found 10 rows
+2025-07-02 18:25:06,575 INFO Posted batch 1 to chat.
+2025-07-02 18:25:06,579 INFO INF scraper completed with results.
+2025-07-02 18:25:06,579 INFO Shutting down…
+2025-07-02 18:25:06,630 INFO Shutdown complete.
+2025-07-02 18:29:27,312 INFO Posted batch 1/3
+2025-07-02 18:29:28,469 INFO Posted batch 2/3
+2025-07-02 18:29:29,727 INFO Posted batch 3/3
+2025-07-02 18:35:04,212 INFO Starting INF scraper run
+2025-07-02 18:35:04,711 INFO Found existing storage_state; verifying session
+2025-07-02 18:35:06,185 INFO Existing session still valid.
+2025-07-02 18:35:06,190 INFO Reusing existing session
+2025-07-02 18:35:06,191 INFO Beginning data scrape
+2025-07-02 18:35:06,191 INFO Opening context for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 18:35:06,248 INFO Navigating to Inventory Insights for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 18:35:07,267 INFO Date-picker is visible.
+2025-07-02 18:35:10,145 INFO Setting pageSize to 250 via <select>
+2025-07-02 18:35:56,232 ERROR Error during scrape: Page.wait_for_function: Timeout 45000ms exceeded.
+Traceback (most recent call last):
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 271, in scrape_inf_data
+    await wait_for_table_change(
+  File "/Users/nikicooke/2025/218-inf/inf.py", line 224, in wait_for_table_change
+    await page.wait_for_function(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/async_api/_generated.py", line 11462, in wait_for_function
+    await self._impl_obj.wait_for_function(
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_page.py", line 1114, in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_frame.py", line 820, in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 69, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/nikicooke/2025/218-scraper/venv/lib/python3.12/site-packages/playwright/_impl/_connection.py", line 558, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 45000ms exceeded.
+2025-07-02 18:35:56,576 INFO Screenshot saved: output/scrape_error_20250702_183556.png
+2025-07-02 18:35:56,592 ERROR Scrape returned None; aborting notifications
+2025-07-02 18:35:56,592 INFO Run complete; shutting down browser and Playwright
+2025-07-02 18:36:22,499 INFO Starting INF scraper run
+2025-07-02 18:36:23,092 INFO Found existing storage_state; verifying session
+2025-07-02 18:36:24,617 INFO Existing session still valid.
+2025-07-02 18:36:24,624 INFO Reusing existing session
+2025-07-02 18:36:24,624 INFO Beginning data scrape
+2025-07-02 18:36:24,624 INFO Opening context for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 18:36:24,691 INFO Navigating to Inventory Insights for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 18:36:25,675 INFO Date-picker is visible.
+2025-07-02 18:36:27,551 INFO Setting pageSize to 250 via <select>
+2025-07-02 18:36:28,610 INFO Sorting table by 'INF Units'
+2025-07-02 18:36:29,813 INFO Found 88 rows; extracting data
+2025-07-02 18:36:30,462 INFO Scraped 88 INF items for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 18:36:30,467 INFO Retrieved 88 INF items; logging and notifying
+2025-07-02 18:36:30,469 INFO Logged INF results to file.
+2025-07-02 18:36:30,469 INFO SINGLE_CARD enabled: sending 1 card with up to 30 items
+2025-07-02 18:36:30,469 INFO Posting batch 1/1 with 30 items
+2025-07-02 18:36:31,650 INFO Posted batch 1/1 successfully
+2025-07-02 18:36:31,655 INFO Run complete; shutting down browser and Playwright
+2025-07-02 18:37:23,298 INFO Starting INF scraper run
+2025-07-02 18:37:23,808 INFO Found existing storage_state; verifying session
+2025-07-02 18:37:25,223 INFO Existing session still valid.
+2025-07-02 18:37:25,230 INFO Reusing existing session
+2025-07-02 18:37:25,231 INFO Beginning data scrape
+2025-07-02 18:37:25,231 INFO Opening context for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 18:37:25,293 INFO Navigating to Inventory Insights for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 18:37:26,823 INFO Date-picker is visible.
+2025-07-02 18:37:26,824 INFO Applying 'Yesterday' filter
+2025-07-02 18:37:28,289 INFO Setting pageSize to 250 via <select>
+2025-07-02 18:37:29,330 INFO Sorting table by 'INF Units'
+2025-07-02 18:37:30,423 INFO Found 123 rows; extracting data
+2025-07-02 18:37:31,608 INFO Scraped 123 INF items for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 18:37:31,613 INFO Retrieved 123 INF items; logging and notifying
+2025-07-02 18:37:31,615 INFO Logged INF results to file.
+2025-07-02 18:37:31,615 INFO SINGLE_CARD enabled: sending 1 card with up to 30 items
+2025-07-02 18:37:31,615 INFO Posting batch 1/1 with 30 items
+2025-07-02 18:37:32,760 INFO Posted batch 1/1 successfully
+2025-07-02 18:37:32,763 INFO Run complete; shutting down browser and Playwright
+2025-07-02 18:42:55,110 INFO Starting INF scraper run
+2025-07-02 18:42:55,650 INFO Found existing storage_state; verifying session
+2025-07-02 18:42:57,140 INFO Existing session still valid.
+2025-07-02 18:42:57,154 INFO Reusing existing session
+2025-07-02 18:42:57,155 INFO Beginning data scrape
+2025-07-02 18:42:57,155 INFO Opening context for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 18:42:57,220 INFO Navigating to Inventory Insights for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 18:42:58,809 INFO Date-picker is visible.
+2025-07-02 18:43:01,699 INFO Setting pageSize to 250 via <select>
+2025-07-02 18:43:02,747 INFO Sorting table by 'INF Units'
+2025-07-02 18:43:03,847 INFO Found 88 rows; extracting data
+2025-07-02 18:43:04,491 INFO Scraped 88 INF items for 'Morrisons - Thornton-Cleveleys'
+2025-07-02 18:43:04,495 INFO Retrieved 88 INF items; logging and notifying
+2025-07-02 18:43:04,496 INFO Logged INF results to file.
+2025-07-02 18:43:04,497 INFO SINGLE_CARD enabled: sending 1 card with up to 30 items
+2025-07-02 18:43:04,497 INFO Posting batch 1/1 with 30 items
+2025-07-02 18:43:05,656 INFO Posted batch 1/1 successfully
+2025-07-02 18:43:05,661 INFO Run complete; shutting down browser and Playwright
