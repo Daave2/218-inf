@@ -190,6 +190,21 @@ async def prime_master_session() -> bool:
         page = await ctx.new_page()
         if not await perform_login(page):
             return False
+        # After logging in, navigate directly to the Inventory Insights page
+        # for the target store. Including the merchant & marketplace IDs in the
+        # URL skips the account-picker step for multi-account users.
+        try:
+            url = (
+                "https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/"
+                f"?ref_=mp_home_logo_xx&cor=mmp_EU"
+                f"&mons_sel_dir_mcid={TARGET_STORE['merchant_id']}"
+                f"&mons_sel_mkid={TARGET_STORE['marketplace_id']}"
+            )
+            app_logger.info("Visiting Inventory Insights to finalize session")
+            await page.goto(url, timeout=PAGE_TIMEOUT, wait_until="domcontentloaded")
+            await expect(page.locator("#range-selector")).to_be_visible(timeout=WAIT_TIMEOUT)
+        except Exception as e:
+            app_logger.warning(f"Inventory Insights navigation failed: {e}")
         await ctx.storage_state(path=STORAGE_STATE)
         app_logger.info("Saved new session state.")
         return True
