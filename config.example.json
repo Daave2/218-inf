@@ -8,6 +8,11 @@
   "login_email": "you@example.com",
   "login_password": "your_password",
   "otp_secret_key": "OTP_SECRET",
+  "target_store": {
+    "store_name": "Example Store",
+    "merchant_id": "MERCHANT_ID",
+    "marketplace_id": "MARKETPLACE_ID"
+  },
   "max_concurrency": 35,
   "min_concurrency": 1,
   "initial_concurrency": 5,

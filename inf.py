@@ -158,9 +158,18 @@ async def perform_login(page: Page) -> bool:
             await page.get_by_role("button", name="Sign in").click()
             await page.wait_for_selector(f"{dash_sel}, {acct_sel}", timeout=WAIT_TIMEOUT)
         if await page.locator(acct_sel).is_visible():
-            app_logger.error("Account-picker shown; unhandled.")
-            await _save_screenshot(page, "login_account_picker")
-            return False
+            app_logger.warning("Account-picker shown; selecting target account.")
+            try:
+                name = TARGET_STORE.get('store_name', '')
+                link = page.get_by_role("link", name=name)
+                if not await link.is_visible():
+                    link = page.locator(f"text={name}")
+                await link.click()
+                await page.wait_for_selector(dash_sel, timeout=WAIT_TIMEOUT)
+            except Exception as e:
+                app_logger.error(f"Failed to select account: {e}")
+                await _save_screenshot(page, "login_account_picker")
+                return False
 
         await expect(page.locator(dash_sel)).to_be_visible(timeout=WAIT_TIMEOUT)
         app_logger.info("Login successful.")
