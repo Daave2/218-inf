@@ -160,8 +160,8 @@ async def perform_login(page: Page) -> bool:
         if await page.locator(acct_sel).is_visible():
             app_logger.warning("Account-picker shown; selecting target account.")
             try:
-                name = TARGET_STORE.get('store_name', '')
-                link = page.get_by_role("link", name=name)
+                name = TARGET_STORE.get('store_name', '').strip()
+                link = page.get_by_role("link", name=re.compile(re.escape(name), re.I))
                 if not await link.is_visible():
                     link = page.locator(f"text={name}")
                 await link.wait_for(state="visible", timeout=WAIT_TIMEOUT)
@@ -185,7 +185,7 @@ async def perform_login(page: Page) -> bool:
 async def prime_master_session() -> bool:
     global browser
     app_logger.info("Priming master session")
-    ctx = await browser.new_context()
+    ctx = await browser.new_context(ignore_https_errors=True)
     try:
         page = await ctx.new_page()
         if not await perform_login(page):
@@ -244,7 +244,7 @@ async def scrape_inf_data(
 ) -> list[dict] | None:
     store = store_info['store_name']
     app_logger.info(f"Opening context for '{store}'")
-    ctx = await browser.new_context(storage_state=storage_state)
+    ctx = await browser.new_context(storage_state=storage_state, ignore_https_errors=True)
     page = await ctx.new_page()
     try:
         url = (
@@ -419,7 +419,7 @@ async def main(args):
     login_required = True
     if ensure_storage_state():
         app_logger.info("Found existing storage_state; verifying session")
-        ctx  = await browser.new_context(storage_state=json.load(open(STORAGE_STATE)))
+        ctx  = await browser.new_context(storage_state=json.load(open(STORAGE_STATE)), ignore_https_errors=True)
         pg   = await ctx.new_page()
         test = (
             "https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/"
