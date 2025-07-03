@@ -1,10 +1,10 @@
 # =======================================================================================
-#    AMAZON SELLER CENTRAL - TOP INF ITEMS SCRAPER (V3.2.3 - FINAL LOGIC)
+#    AMAZON SELLER CENTRAL - TOP INF ITEMS SCRAPER (V3.2.4 - FINAL LOGIC)
 # =======================================================================================
 # This script logs into Amazon Seller Central, navigates to the Inventory Insights
 # page, and scrapes the top "Item Not Found" (INF) products.
 #
-# V3.2.3 Changes:
+# V3.2.4 Changes:
 # - Wrapped the 250-pageSize change in a try/except to catch timeouts and proceed.
 # - All other behavior identical to V3.2.2 (250 rows, batching, SINGLE_CARD config, etc).
 # =======================================================================================
@@ -164,7 +164,9 @@ async def perform_login(page: Page) -> bool:
                 link = page.get_by_role("link", name=name)
                 if not await link.is_visible():
                     link = page.locator(f"text={name}")
-                await link.click()
+                await link.wait_for(state="visible", timeout=WAIT_TIMEOUT)
+                await link.scroll_into_view_if_needed()
+                await link.click(timeout=WAIT_TIMEOUT)
                 await page.wait_for_selector(dash_sel, timeout=WAIT_TIMEOUT)
             except Exception as e:
                 app_logger.error(f"Failed to select account: {e}")
