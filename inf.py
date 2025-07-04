@@ -15,6 +15,7 @@ from settings import (
     DEBUG_MODE,
     TARGET_STORE,
     STORAGE_STATE,
+    INVENTORY_URL,
 )
 from auth import ensure_storage_state, check_if_login_needed, prime_master_session
 from scraper import scrape_inf_data
@@ -31,13 +32,7 @@ async def main(args):
         app_logger.info("Found existing storage_state; verifying session")
         ctx  = await browser.new_context(storage_state=json.load(open(STORAGE_STATE)), ignore_https_errors=True)
         pg   = await ctx.new_page()
-        test = (
-            "https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/"
-            f"?ref_=mp_home_logo_xx&cor=mmp_EU"
-            f"&mons_sel_dir_mcid={TARGET_STORE['merchant_id']}"
-            f"&mons_sel_mkid={TARGET_STORE['marketplace_id']}"
-        )
-        login_required = await check_if_login_needed(pg, test)
+        login_required = await check_if_login_needed(pg, INVENTORY_URL)
         await ctx.close()
 
     if login_required:
