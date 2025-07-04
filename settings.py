@@ -44,6 +44,16 @@ INF_WEBHOOK   = config.get('inf_webhook_url')
 TARGET_STORE  = config['target_store']
 SINGLE_CARD   = config.get('single_card', False)
 
+# Pre-built URL for navigating directly to the Inventory Insights page for the
+# configured store. Using this URL immediately after login bypasses the account
+# picker screen when multiple stores are associated with the credentials.
+INVENTORY_URL = (
+    "https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/"
+    f"?ref_=mp_home_logo_xx&cor=mmp_EU"
+    f"&mons_sel_dir_mcid={TARGET_STORE['merchant_id']}"
+    f"&mons_sel_mkid={TARGET_STORE['marketplace_id']}"
+)
+
 # Paths & timeouts
 OUTPUT_DIR      = 'output'
 os.makedirs(OUTPUT_DIR, exist_ok=True)

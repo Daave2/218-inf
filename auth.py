@@ -9,6 +9,7 @@ from settings import (
     STORAGE_STATE,
     LOCAL_TIMEZONE,
     LOGIN_URL,
+    INVENTORY_URL,
     TARGET_STORE,
     PAGE_TIMEOUT,
     WAIT_TIMEOUT,
@@ -74,8 +75,9 @@ async def perform_login(page: Page) -> bool:
         await page.get_by_label("Sign in").click()
 
         otp_sel  = 'input[id*="otp"]'
-        dash_sel = "#content"
-        acct_sel = 'h1:has-text("Select an account")'
+        dash_sel   = "#content"
+        range_sel  = "#range-selector"
+        acct_sel   = 'h1:has-text("Select an account")'
         await page.wait_for_selector(f"{otp_sel}, {dash_sel}, {acct_sel}", timeout=WAIT_TIMEOUT)
         if await page.locator(otp_sel).is_visible():
             code = pyotp.TOTP(config['otp_secret_key']).now()
@@ -83,18 +85,15 @@ async def perform_login(page: Page) -> bool:
             await page.get_by_role("button", name="Sign in").click()
             await page.wait_for_selector(f"{dash_sel}, {acct_sel}", timeout=WAIT_TIMEOUT)
         if await page.locator(acct_sel).is_visible():
-            app_logger.warning("Account-picker shown; selecting target account.")
+            app_logger.warning(
+                "Account-picker shown; navigating directly to Inventory Insights to bypass"
+            )
             try:
-                name = TARGET_STORE.get('store_name', '').strip()
-                link = page.get_by_role("link", name=re.compile(re.escape(name), re.I))
-                if not await link.is_visible():
-                    link = page.locator(f"text={name}")
-                await link.wait_for(state="visible", timeout=WAIT_TIMEOUT)
-                await link.scroll_into_view_if_needed()
-                await link.click(timeout=WAIT_TIMEOUT)
-                await page.wait_for_selector(dash_sel, timeout=WAIT_TIMEOUT)
+                await page.goto(INVENTORY_URL, timeout=PAGE_TIMEOUT, wait_until="domcontentloaded")
+                await expect(page.locator(range_sel)).to_be_visible(timeout=WAIT_TIMEOUT)
+                dash_sel = range_sel
             except Exception as e:
-                app_logger.error(f"Failed to select account: {e}")
+                app_logger.error(f"Failed to bypass account picker: {e}")
                 await save_screenshot(page, "login_account_picker")
                 return False
 
@@ -115,14 +114,8 @@ async def prime_master_session(browser: Browser) -> bool:
         if not await perform_login(page):
             return False
         try:
-            url = (
-                "https://sellercentral.amazon.co.uk/snow-inventory/inventoryinsights/"
-                f"?ref_=mp_home_logo_xx&cor=mmp_EU"
-                f"&mons_sel_dir_mcid={TARGET_STORE['merchant_id']}"
-                f"&mons_sel_mkid={TARGET_STORE['marketplace_id']}"
-            )
             app_logger.info("Visiting Inventory Insights to finalize session")
-            await page.goto(url, timeout=PAGE_TIMEOUT, wait_until="domcontentloaded")
+            await page.goto(INVENTORY_URL, timeout=PAGE_TIMEOUT, wait_until="domcontentloaded")
             await expect(page.locator("#range-selector")).to_be_visible(timeout=WAIT_TIMEOUT)
         except Exception as e:
             app_logger.warning(f"Inventory Insights navigation failed: {e}")
