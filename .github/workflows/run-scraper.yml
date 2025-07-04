@@ -57,10 +57,18 @@ jobs:
     - name: 3. Install Python dependencies
       run: pip install -r requirements.txt
 
-    - name: 4. Install Playwright browsers & dependencies
+    - name: 4. Cache Playwright browsers
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/ms-playwright
+        key: ${{ runner.os }}-playwright-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-playwright-
+
+    - name: 5. Install Playwright browsers & dependencies
       run: python -m playwright install --with-deps chromium
 
-    - name: 5. Build config.json from Secrets
+    - name: 6. Build config.json from Secrets
       run: |
         echo '{
           "debug": false,
@@ -76,10 +84,10 @@ jobs:
           }
         }' > config.json
 
-    - name: 6. Run the INF scraper
+    - name: 7. Run the INF scraper
       run: python inf.py
 
-    - name: 7. Upload artifacts
+    - name: 8. Upload artifacts
       # This guarantees artifacts are uploaded on success or failure for debugging.
       if: always()
       uses: actions/upload-artifact@v4
