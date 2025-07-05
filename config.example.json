@@ -20,6 +20,15 @@
   "marketplace_id": "YOUR_MARKETPLACE_ID",
   "target_url": "https://sellercentral.amazon.co.uk/snowdash?...",
   "debug": false,
+  "email_report": false,
+  "email_settings": {
+    "smtp_server": "smtp.example.com",
+    "smtp_port": 587,
+    "smtp_username": "user@example.com",
+    "smtp_password": "your_password",
+    "from_addr": "inf-report@example.com",
+    "to_addr": "recipient@example.com"
+  },
   "schedule_times": ["10:00", "16:00", "19:00"],
   "auto_concurrency": {
     "enabled": true,

@@ -68,21 +68,30 @@ jobs:
     - name: 5. Install Playwright browsers & dependencies
       run: python -m playwright install --with-deps chromium
 
-    - name: 6. Build config.json from Secrets
-      run: |
-        echo '{
-          "debug": false,
-          "login_url": "${{ secrets.LOGIN_URL }}",
-          "login_email": "${{ secrets.LOGIN_EMAIL }}",
-          "login_password": "${{ secrets.LOGIN_PASSWORD }}",
-          "otp_secret_key": "${{ secrets.OTP_SECRET_KEY }}",
-          "inf_webhook_url": "${{ secrets.INF_WEBHOOK_URL }}",
-          "target_store": {
-            "store_name": "${{ secrets.TARGET_STORE_NAME }}",
-            "merchant_id": "${{ secrets.TARGET_MERCHANT_ID }}",
-            "marketplace_id": "${{ secrets.TARGET_MARKETPLACE_ID }}"
-          }
-        }' > config.json
+      - name: 6. Build config.json from Secrets
+        run: |
+          echo '{
+            "debug": false,
+            "login_url": "${{ secrets.LOGIN_URL }}",
+            "login_email": "${{ secrets.LOGIN_EMAIL }}",
+            "login_password": "${{ secrets.LOGIN_PASSWORD }}",
+            "otp_secret_key": "${{ secrets.OTP_SECRET_KEY }}",
+            "inf_webhook_url": "${{ secrets.INF_WEBHOOK_URL }}",
+            "email_report": ${{ secrets.EMAIL_REPORT }},
+            "email_settings": {
+              "smtp_server": "${{ secrets.SMTP_SERVER }}",
+              "smtp_port": ${{ secrets.SMTP_PORT }},
+              "smtp_username": "${{ secrets.SMTP_USERNAME }}",
+              "smtp_password": "${{ secrets.SMTP_PASSWORD }}",
+              "from_addr": "${{ secrets.EMAIL_FROM }}",
+              "to_addr": "${{ secrets.EMAIL_TO }}"
+            },
+            "target_store": {
+              "store_name": "${{ secrets.TARGET_STORE_NAME }}",
+              "merchant_id": "${{ secrets.TARGET_MERCHANT_ID }}",
+              "marketplace_id": "${{ secrets.TARGET_MARKETPLACE_ID }}"
+            }
+          }' > config.json
 
     - name: 7. Run the INF scraper
       run: python inf.py
