@@ -78,14 +78,6 @@ jobs:
             "otp_secret_key": "${{ secrets.OTP_SECRET_KEY }}",
             "inf_webhook_url": "${{ secrets.INF_WEBHOOK_URL }}",
             "email_report": false,
-            "email_settings": {
-              "smtp_server": "${{ secrets.SMTP_SERVER }}",
-              "smtp_port": "${{ secrets.SMTP_PORT }}",
-              "smtp_username": "${{ secrets.SMTP_USERNAME }}",
-              "smtp_password": "${{ secrets.SMTP_PASSWORD }}",
-              "from_addr": "${{ secrets.EMAIL_FROM }}",
-              "to_addr": "${{ secrets.EMAIL_TO }}"
-            },
             "target_store": {
               "store_name": "${{ secrets.TARGET_STORE_NAME }}",
               "merchant_id": "${{ secrets.TARGET_MERCHANT_ID }}",
