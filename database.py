@@ -1,7 +1,8 @@
 import asyncio
 from datetime import datetime
+import re
 
-from settings import app_logger, supabase_client, LOCAL_TIMEZONE
+from settings import app_logger, supabase_client, LOCAL_TIMEZONE, SMALL_IMAGE_SIZE
 
 
 def clean_numeric_string(value: str) -> int:
@@ -10,6 +11,14 @@ def clean_numeric_string(value: str) -> int:
         return int(value.replace(",", ""))
     except (ValueError, AttributeError):
         return 0
+
+def get_larger_image_url(thumb_url: str | None) -> str | None:
+    """Converts an Amazon thumbnail URL to a larger image URL."""
+    if not thumb_url:
+        return None
+    # Amazon thumbnail URLs often contain size specifiers like ._SS80_.
+    # We replace this with a larger size from settings.
+    return re.sub(r"\._SS\d+_\.", f"._SS{SMALL_IMAGE_SIZE}_.", thumb_url)
 
 
 async def create_investigation_from_scrape(items: list[dict]) -> None:
@@ -40,10 +49,7 @@ async def create_investigation_from_scrape(items: list[dict]) -> None:
             .insert({"name": investigation_name})
             .execute(),
         )
-
-        # --- CORRECTED ERROR HANDLING ---
-        # In supabase-py v2, a successful response has data, and an unsuccessful one does not.
-        # The error details are now within the response object itself.
+        
         if not investigation_response.data:
             error_message = (
                 investigation_response.message
@@ -53,16 +59,16 @@ async def create_investigation_from_scrape(items: list[dict]) -> None:
             raise Exception(f"Failed to create investigation: {error_message}")
 
         investigation_id = investigation_response.data[0]["id"]
-        app_logger.info(
-            f"Successfully created investigation with ID: {investigation_id}"
-        )
+        app_logger.info(f"Successfully created investigation with ID: {investigation_id}")
 
-        # Step 2: Prepare product data for bulk insertion
+        # Step 2: Prepare product data for bulk insertion, now including the image URL.
         products_to_insert = [
             {
                 "investigation_id": investigation_id,
                 "sku": item.get("sku"),
                 "product_name": item.get("product_name"),
+                # --- NEWLY ADDED FIELD ---
+                "image_url": get_larger_image_url(item.get("image_url")),
                 "inf_units": clean_numeric_string(item.get("inf_units", "0")),
                 "orders_impacted": clean_numeric_string(
                     item.get("orders_impacted", "0")
@@ -81,13 +87,9 @@ async def create_investigation_from_scrape(items: list[dict]) -> None:
         app_logger.info(f"Inserting {len(products_to_insert)} products into Supabase.")
         products_response = await loop.run_in_executor(
             None,
-            lambda: supabase_client.table("products")
-            .insert(products_to_insert)
-            .execute(),
+            lambda: supabase_client.table("products").insert(products_to_insert).execute(),
         )
 
-        # --- CORRECTED ERROR HANDLING ---
-        # The check is the same as above. If `data` is not present, an error occurred.
         if not products_response.data:
             error_message = (
                 products_response.message
@@ -102,6 +104,4 @@ async def create_investigation_from_scrape(items: list[dict]) -> None:
         )
 
     except Exception as e:
-        app_logger.error(
-            f"An error occurred during the Supabase update: {e}", exc_info=True
-        )
+        app_logger.error(f"An error occurred during the Supabase update: {e}", exc_info=True)
