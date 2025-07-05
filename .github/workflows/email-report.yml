@@ -1,4 +1,4 @@
-name: Run Amazon INF Scraper
+name: Daily INF Email Report
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ concurrency:
 
 env:
   PYTHON_VERSION: '3.11'
-  UK_TARGET_HOURS: '09 12 18'
+  UK_TARGET_HOURS: '07'
 
 jobs:
   check-time:
@@ -38,7 +38,7 @@ jobs:
             echo "run_job=false" >> $GITHUB_OUTPUT
           fi
 
-  scrape:
+  email:
     needs: check-time
     if: needs.check-time.outputs.run_job == 'true'
     runs-on: ubuntu-latest
@@ -77,7 +77,7 @@ jobs:
             "login_password": "${{ secrets.LOGIN_PASSWORD }}",
             "otp_secret_key": "${{ secrets.OTP_SECRET_KEY }}",
             "inf_webhook_url": "${{ secrets.INF_WEBHOOK_URL }}",
-            "email_report": false,
+            "email_report": ${{ secrets.EMAIL_REPORT || 'false' }},
             "email_settings": {
               "smtp_server": "${{ secrets.SMTP_SERVER }}",
               "smtp_port": "${{ secrets.SMTP_PORT }}",
@@ -94,14 +94,13 @@ jobs:
           }' > config.json
 
       - name: 7. Run the INF scraper
-        run: python inf.py
+        run: python inf.py --yesterday
 
       - name: 8. Upload artifacts
-        # This guarantees artifacts are uploaded on success or failure for debugging.
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: inf-scraper-output-${{ github.run_id }}
+          name: inf-email-output-${{ github.run_id }}
           path: |
             output/
             inf_app.log
