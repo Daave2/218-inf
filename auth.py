@@ -18,6 +18,7 @@ from settings import (
     config,
 )
 
+
 async def save_screenshot(page: Page | None, prefix: str) -> None:
     if not page or page.is_closed():
         return
@@ -31,6 +32,7 @@ async def save_screenshot(page: Page | None, prefix: str) -> None:
     except Exception as e:
         app_logger.error(f"Screenshot error: {e}")
 
+
 def ensure_storage_state() -> bool:
     if not os.path.exists(STORAGE_STATE) or os.path.getsize(STORAGE_STATE) == 0:
         return False
@@ -40,57 +42,73 @@ def ensure_storage_state() -> bool:
     except Exception:
         return False
 
+
 async def check_if_login_needed(page: Page, test_url: str) -> bool:
     try:
         await page.goto(test_url, timeout=PAGE_TIMEOUT, wait_until="load")
         if "signin" in page.url.lower() or "/ap/" in page.url:
             app_logger.info("Session invalid, login required.")
             return True
-        await expect(page.locator("#range-selector")).to_be_visible(timeout=WAIT_TIMEOUT)
+        await expect(page.locator("#range-selector")).to_be_visible(
+            timeout=WAIT_TIMEOUT
+        )
         app_logger.info("Existing session still valid.")
         return False
     except Exception:
         app_logger.warning("Error verifying session; assuming login required.")
         return True
 
+
 async def perform_login(page: Page) -> bool:
     app_logger.info("Starting login flow")
     try:
         await page.goto(LOGIN_URL, timeout=PAGE_TIMEOUT, wait_until="load")
         cont_input = 'input[type="submit"][aria-labelledby="continue-announce"]'
-        cont_btn   = 'button:has-text("Continue shopping")'
-        email_sel  = 'input#ap_email'
-        await page.wait_for_selector(f"{cont_input}, {cont_btn}, {email_sel}", timeout=ACTION_TIMEOUT)
+        cont_btn = 'button:has-text("Continue shopping")'
+        email_sel = "input#ap_email"
+        await page.wait_for_selector(
+            f"{cont_input}, {cont_btn}, {email_sel}", timeout=ACTION_TIMEOUT
+        )
         if await page.locator(cont_input).is_visible():
             await page.locator(cont_input).click()
         elif await page.locator(cont_btn).is_visible():
             await page.locator(cont_btn).click()
 
         await expect(page.locator(email_sel)).to_be_visible(timeout=WAIT_TIMEOUT)
-        await page.get_by_label("Email or mobile phone number").fill(config['login_email'])
+        await page.get_by_label("Email or mobile phone number").fill(
+            config["login_email"]
+        )
         await page.get_by_label("Continue").click()
         pw = page.get_by_label("Password")
         await expect(pw).to_be_visible(timeout=WAIT_TIMEOUT)
-        await pw.fill(config['login_password'])
+        await pw.fill(config["login_password"])
         await page.get_by_label("Sign in").click()
 
-        otp_sel  = 'input[id*="otp"]'
-        dash_sel   = "#content"
-        range_sel  = "#range-selector"
-        acct_sel   = 'h1:has-text("Select an account")'
-        await page.wait_for_selector(f"{otp_sel}, {dash_sel}, {acct_sel}", timeout=WAIT_TIMEOUT)
+        otp_sel = 'input[id*="otp"]'
+        dash_sel = "#content"
+        range_sel = "#range-selector"
+        acct_sel = 'h1:has-text("Select an account")'
+        await page.wait_for_selector(
+            f"{otp_sel}, {dash_sel}, {acct_sel}", timeout=WAIT_TIMEOUT
+        )
         if await page.locator(otp_sel).is_visible():
-            code = pyotp.TOTP(config['otp_secret_key']).now()
+            code = pyotp.TOTP(config["otp_secret_key"]).now()
             await page.locator(otp_sel).fill(code)
             await page.get_by_role("button", name="Sign in").click()
-            await page.wait_for_selector(f"{dash_sel}, {acct_sel}", timeout=WAIT_TIMEOUT)
+            await page.wait_for_selector(
+                f"{dash_sel}, {acct_sel}", timeout=WAIT_TIMEOUT
+            )
         if await page.locator(acct_sel).is_visible():
             app_logger.warning(
                 "Account-picker shown; navigating directly to Inventory Insights to bypass"
             )
             try:
-                await page.goto(INVENTORY_URL, timeout=PAGE_TIMEOUT, wait_until="domcontentloaded")
-                await expect(page.locator(range_sel)).to_be_visible(timeout=WAIT_TIMEOUT)
+                await page.goto(
+                    INVENTORY_URL, timeout=PAGE_TIMEOUT, wait_until="domcontentloaded"
+                )
+                await expect(page.locator(range_sel)).to_be_visible(
+                    timeout=WAIT_TIMEOUT
+                )
                 dash_sel = range_sel
             except Exception as e:
                 app_logger.error(f"Failed to bypass account picker: {e}")
@@ -106,6 +124,7 @@ async def perform_login(page: Page) -> bool:
         await save_screenshot(page, "login_failure")
         return False
 
+
 async def prime_master_session(browser: Browser) -> bool:
     app_logger.info("Priming master session")
     ctx = await browser.new_context(ignore_https_errors=True)
@@ -115,8 +134,12 @@ async def prime_master_session(browser: Browser) -> bool:
             return False
         try:
             app_logger.info("Visiting Inventory Insights to finalize session")
-            await page.goto(INVENTORY_URL, timeout=PAGE_TIMEOUT, wait_until="domcontentloaded")
-            await expect(page.locator("#range-selector")).to_be_visible(timeout=WAIT_TIMEOUT)
+            await page.goto(
+                INVENTORY_URL, timeout=PAGE_TIMEOUT, wait_until="domcontentloaded"
+            )
+            await expect(page.locator("#range-selector")).to_be_visible(
+                timeout=WAIT_TIMEOUT
+            )
         except Exception as e:
             app_logger.warning(f"Inventory Insights navigation failed: {e}")
         await ctx.storage_state(path=STORAGE_STATE)

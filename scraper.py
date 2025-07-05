@@ -10,10 +10,9 @@ from settings import (
     app_logger,
 )
 
+
 async def wait_for_table_change(
-    page: Page,
-    table_sel: str,
-    action: Callable[[], Awaitable]
+    page: Page, table_sel: str, action: Callable[[], Awaitable]
 ):
     first = page.locator(f"{table_sel} tr:first-child")
     text0 = ""
@@ -28,18 +27,21 @@ async def wait_for_table_change(
             return el.textContent.trim() !== init.trim();
         }""",
         arg=[table_sel, text0],
-        timeout=WAIT_TIMEOUT
+        timeout=WAIT_TIMEOUT,
     )
+
 
 async def scrape_inf_data(
     browser: Browser,
     store_info: dict,
     storage_state: dict,
-    fetch_yesterday: bool = False
+    fetch_yesterday: bool = False,
 ) -> list[dict] | None:
-    store = store_info['store_name']
+    store = store_info["store_name"]
     app_logger.info(f"Opening context for '{store}'")
-    ctx = await browser.new_context(storage_state=storage_state, ignore_https_errors=True)
+    ctx = await browser.new_context(
+        storage_state=storage_state, ignore_https_errors=True
+    )
     page = await ctx.new_page()
     try:
         url = (
@@ -50,7 +52,9 @@ async def scrape_inf_data(
         )
         app_logger.info(f"Navigating to Inventory Insights for '{store}'")
         await page.goto(url, timeout=PAGE_TIMEOUT, wait_until="domcontentloaded")
-        await expect(page.locator("#range-selector")).to_be_visible(timeout=WAIT_TIMEOUT)
+        await expect(page.locator("#range-selector")).to_be_visible(
+            timeout=WAIT_TIMEOUT
+        )
         app_logger.info("Date-picker is visible.")
 
         table_sel = "table.imp-table tbody"
@@ -60,7 +64,9 @@ async def scrape_inf_data(
             await wait_for_table_change(page, table_sel, lambda: link.click())
 
         try:
-            await expect(page.locator(f"{table_sel} tr").first).to_be_visible(timeout=20000)
+            await expect(page.locator(f"{table_sel} tr").first).to_be_visible(
+                timeout=20000
+            )
         except TimeoutError:
             app_logger.info("No data rows found; exiting scrape cleanly.")
             return []
@@ -68,8 +74,9 @@ async def scrape_inf_data(
         app_logger.info("Setting pageSize to 250 via <select>")
         try:
             await wait_for_table_change(
-                page, table_sel,
-                lambda: page.select_option('select[name="pageSizeDropDown"]', '250')
+                page,
+                table_sel,
+                lambda: page.select_option('select[name="pageSizeDropDown"]', "250"),
             )
         except TimeoutError:
             app_logger.warning(
@@ -78,7 +85,9 @@ async def scrape_inf_data(
             )
 
         app_logger.info("Sorting table by 'INF Units'")
-        await wait_for_table_change(page, table_sel, lambda: page.locator("#sort-3").click())
+        await wait_for_table_change(
+            page, table_sel, lambda: page.locator("#sort-3").click()
+        )
 
         rows = await page.locator(f"{table_sel} tr").all()
         app_logger.info(f"Found {len(rows)} rows; extracting data")
@@ -88,15 +97,21 @@ async def scrape_inf_data(
             try:
                 cells = r.locator("td")
                 thumb = await cells.nth(0).locator("img").get_attribute("src") or ""
-                img   = re.sub(r'\._SS\d+_\.', f'._SS{SMALL_IMAGE_SIZE}_.', thumb)
-                items.append({
-                    'image_url': img,
-                    'sku': await cells.nth(1).locator("span").inner_text(),
-                    'product_name': await cells.nth(2).locator("a span").inner_text(),
-                    'inf_units': await cells.nth(3).locator("span").inner_text(),
-                    'orders_impacted': await cells.nth(4).locator("span").inner_text(),
-                    'inf_pct': await cells.nth(8).locator("span").inner_text(),
-                })
+                img = re.sub(r"\._SS\d+_\.", f"._SS{SMALL_IMAGE_SIZE}_.", thumb)
+                items.append(
+                    {
+                        "image_url": img,
+                        "sku": await cells.nth(1).locator("span").inner_text(),
+                        "product_name": await cells.nth(2)
+                        .locator("a span")
+                        .inner_text(),
+                        "inf_units": await cells.nth(3).locator("span").inner_text(),
+                        "orders_impacted": await cells.nth(4)
+                        .locator("span")
+                        .inner_text(),
+                        "inf_pct": await cells.nth(8).locator("span").inner_text(),
+                    }
+                )
             except Exception as e:
                 app_logger.warning(f"Failed to parse row: {e}")
 
