@@ -11,7 +11,7 @@ LOCAL_TIMEZONE = timezone("Europe/London")
 TABLE_POLL_DELAY = 1.0  # seconds to wait after table actions
 BATCH_SIZE = 30  # max items per webhook message
 SMALL_IMAGE_SIZE = 300  # px for product thumbnails used in chat messages
-EMAIL_THUMBNAIL_SIZE = 150  # px for product images in email
+EMAIL_THUMBNAIL_SIZE = 100  # px for product images in email
 QR_CODE_SIZE = 80  # px for QR codes
 
 
