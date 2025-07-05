@@ -40,11 +40,17 @@ async def create_investigation_from_scrape(items: list[dict]) -> None:
             .insert({"name": investigation_name})
             .execute(),
         )
-
+        
+        # --- CORRECTED ERROR HANDLING ---
+        # In supabase-py v2, a successful response has data, and an unsuccessful one does not.
+        # The error details are now within the response object itself.
         if not investigation_response.data:
-            raise Exception(
-                f"Failed to create investigation: {investigation_response.error}"
+            error_message = (
+                investigation_response.message
+                if hasattr(investigation_response, "message")
+                else "Unknown error"
             )
+            raise Exception(f"Failed to create investigation: {error_message}")
 
         investigation_id = investigation_response.data[0]["id"]
         app_logger.info(f"Successfully created investigation with ID: {investigation_id}")
@@ -76,8 +82,15 @@ async def create_investigation_from_scrape(items: list[dict]) -> None:
             lambda: supabase_client.table("products").insert(products_to_insert).execute(),
         )
 
-        if products_response.error:
-            raise Exception(f"Failed to insert products: {products_response.error}")
+        # --- CORRECTED ERROR HANDLING ---
+        # The check is the same as above. If `data` is not present, an error occurred.
+        if not products_response.data:
+            error_message = (
+                products_response.message
+                if hasattr(products_response, "message")
+                else "Unknown error during product insert"
+            )
+            raise Exception(f"Failed to insert products: {error_message}")
 
         app_logger.info(
             "Successfully inserted all products into Supabase for investigation "
