@@ -46,7 +46,7 @@ except FileNotFoundError:
 
 
 # Supabase Client
-ENABLE_SUPABASE_UPLOAD = config.get("enable_supabase_upload", False)
+ENABLE_SUPABASE_UPLOAD = config.get("enable_supabase_upload", True)
 SUPABASE_URL = config.get("supabase_url")
 SUPABASE_KEY = config.get("supabase_service_key")
 supabase_client: Client | None = None
