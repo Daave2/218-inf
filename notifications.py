@@ -171,8 +171,16 @@ async def email_inf_report(items: list[dict]) -> None:
     store = TARGET_STORE["store_name"]
 
     table_rows = "".join(
-        f"<tr><td>{it['sku']}</td><td>{it['product_name']}</td><td>{it['inf_units']}</td>"
-        f"<td>{it['orders_impacted']}</td><td>{it['inf_pct']}</td><td></td><td></td></tr>"
+        f"<tr>"
+        f"<td><img src=\"{it['image_url']}\" alt=\"{it['product_name']}\" width=\"{SMALL_IMAGE_SIZE}\"></td>"
+        f"<td>{it['sku']}</td>"
+        f"<td>{it['product_name']}</td>"
+        f"<td>{it['inf_units']}</td>"
+        f"<td>{it['orders_impacted']}</td>"
+        f"<td>{it['inf_pct']}</td>"
+        f"<td><img src=\"https://api.qrserver.com/v1/create-qr-code/?size={QR_CODE_SIZE}x{QR_CODE_SIZE}&data={urllib.parse.quote(it['sku'])}\" alt=\"QR {it['sku']}\"></td>"
+        f"<td></td><td></td>"
+        f"</tr>"
         for it in items
     )
 
@@ -182,8 +190,8 @@ async def email_inf_report(items: list[dict]) -> None:
         <p>Top INF Items Report - {store} ({ts})</p>
         <table border='1' cellpadding='4' cellspacing='0'>
           <tr>
-            <th>SKU</th><th>Product</th><th>INF Units</th>
-            <th>Orders Impacted</th><th>INF %</th>
+            <th>Image</th><th>SKU</th><th>Product</th><th>INF Units</th>
+            <th>Orders Impacted</th><th>INF %</th><th>QR Code</th>
             <th>Action taken</th><th>Actioned</th>
           </tr>
           {table_rows}
