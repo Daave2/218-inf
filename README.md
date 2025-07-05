@@ -27,6 +27,8 @@ Configure the following repository secrets used by the workflows:
 - `LOGIN_PASSWORD`
 - `OTP_SECRET_KEY`
 - `INF_WEBHOOK_URL` (used by `run-scraper.yml`)
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_KEY`
 - `TARGET_STORE_NAME`
 - `TARGET_MERCHANT_ID`
 - `TARGET_MARKETPLACE_ID`

@@ -79,6 +79,8 @@ jobs:
             "inf_webhook_url": "${{ secrets.INF_WEBHOOK_URL }}",
             "email_report": false,
             "enable_supabase_upload": true,
+            "supabase_url": "${{ secrets.SUPABASE_URL }}",
+            "supabase_service_key": "${{ secrets.SUPABASE_SERVICE_KEY }}",
             "target_store": {
               "store_name": "${{ secrets.TARGET_STORE_NAME }}",
               "merchant_id": "${{ secrets.TARGET_MERCHANT_ID }}",
