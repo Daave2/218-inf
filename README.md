@@ -15,20 +15,24 @@ This project collects "Item Not Found" (INF) metrics from Amazon Seller Central.
 
 ## GitHub Actions
 
-The repository contains `.github/workflows/run-scraper.yml` which runs the scraper on a schedule or manually. Configure the following repository secrets for the workflow:
+The repository contains two GitHub workflows:
+
+- `.github/workflows/run-scraper.yml` posts INF items to the chat webhook on a schedule and never emails the report.
+- `.github/workflows/email-report.yml` sends the daily email report only.
+
+Configure the following repository secrets used by the workflows:
 
 - `LOGIN_URL`
 - `LOGIN_EMAIL`
 - `LOGIN_PASSWORD`
 - `OTP_SECRET_KEY`
-- `INF_WEBHOOK_URL`
+- `INF_WEBHOOK_URL` (used by `run-scraper.yml`)
 - `TARGET_STORE_NAME`
 - `TARGET_MERCHANT_ID`
 - `TARGET_MARKETPLACE_ID`
 
-If you want the workflow to email the report, also set these optional secrets:
+The email report workflow also requires these SMTP secrets:
 
-- `EMAIL_REPORT` (set to `true` to enable emailing)
 - `SMTP_SERVER`
 - `SMTP_PORT`
 - `SMTP_USERNAME`
@@ -37,5 +41,7 @@ If you want the workflow to email the report, also set these optional secrets:
 - `EMAIL_TO`
 
 The workflow builds `config.json` from these secrets and runs `python inf.py`. Artifacts such as log files and scraped data are uploaded for inspection.
+
+`run-scraper.yml` disables emailing, while `email-report.yml` omits the chat webhook.
 
 
