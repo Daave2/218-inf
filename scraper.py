@@ -7,6 +7,7 @@ from settings import (
     WAIT_TIMEOUT,
     TABLE_POLL_DELAY,
     SMALL_IMAGE_SIZE,
+    DATE_FILTER_DELAY,
     app_logger,
 )
 
@@ -62,6 +63,7 @@ async def scrape_inf_data(
             app_logger.info("Applying 'Yesterday' filter")
             link = page.get_by_role("link", name="Yesterday")
             await wait_for_table_change(page, table_sel, lambda: link.click())
+            await asyncio.sleep(DATE_FILTER_DELAY)
 
         try:
             await expect(page.locator(f"{table_sel} tr").first).to_be_visible(
