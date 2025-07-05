@@ -77,7 +77,7 @@ jobs:
             "login_password": "${{ secrets.LOGIN_PASSWORD }}",
             "otp_secret_key": "${{ secrets.OTP_SECRET_KEY }}",
             "inf_webhook_url": "${{ secrets.INF_WEBHOOK_URL }}",
-            "email_report": ${{ secrets.EMAIL_REPORT }},
+            "email_report": ${{ secrets.EMAIL_REPORT || 'false' }},
             "email_settings": {
               "smtp_server": "${{ secrets.SMTP_SERVER }}",
               "smtp_port": "${{ secrets.SMTP_PORT }}",
