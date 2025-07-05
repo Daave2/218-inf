@@ -5,6 +5,7 @@ from datetime import datetime
 from pytz import timezone
 from logging.handlers import RotatingFileHandler
 import asyncio
+from supabase import create_client, Client
 
 # Basic constants
 LOCAL_TIMEZONE = timezone("Europe/London")
@@ -42,6 +43,22 @@ try:
 except FileNotFoundError:
     app_logger.critical("config.json not found. Please create it before running.")
     exit(1)
+
+
+# Supabase Client
+ENABLE_SUPABASE_UPLOAD = config.get("enable_supabase_upload", False)
+SUPABASE_URL = config.get("supabase_url")
+SUPABASE_KEY = config.get("supabase_service_key")
+supabase_client: Client | None = None
+if SUPABASE_URL and SUPABASE_KEY:
+    supabase_client = create_client(SUPABASE_URL, SUPABASE_KEY)
+    app_logger.info("Supabase client initialized.")
+elif ENABLE_SUPABASE_UPLOAD:
+    app_logger.warning(
+        "Supabase upload is enabled, but credentials were not found. "
+        "Database integration will be skipped."
+    )
+
 
 EMAIL_THUMBNAIL_SIZE = config.get("thumbnail_size", EMAIL_THUMBNAIL_SIZE)
 

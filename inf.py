@@ -16,10 +16,12 @@ from settings import (
     TARGET_STORE,
     STORAGE_STATE,
     INVENTORY_URL,
+    ENABLE_SUPABASE_UPLOAD,
 )
 from auth import ensure_storage_state, check_if_login_needed, prime_master_session
 from scraper import scrape_inf_data
 from notifications import log_inf_results, post_inf_to_chat, email_inf_report
+from database import create_investigation_from_scrape
 
 
 async def main(args):
@@ -58,7 +60,15 @@ async def main(args):
     elif not data:
         app_logger.info("No INF items found for the period")
     else:
-        app_logger.info(f"Retrieved {len(data)} INF items; logging and notifying")
+        app_logger.info(f"Retrieved {len(data)} INF items; processing...")
+
+        if ENABLE_SUPABASE_UPLOAD:
+            app_logger.info("Supabase upload is enabled. Creating investigation...")
+            await create_investigation_from_scrape(data)
+        else:
+            app_logger.info("Supabase upload is disabled. Skipping database update.")
+
+        # Run existing logging and notification steps
         await log_inf_results(data)
         await post_inf_to_chat(data)
         await email_inf_report(data)

@@ -8,6 +8,9 @@
   "login_email": "you@example.com",
   "login_password": "your_password",
   "otp_secret_key": "OTP_SECRET",
+  "enable_supabase_upload": false,
+  "supabase_url": "https://<your-project-ref>.supabase.co",
+  "supabase_service_key": "YOUR_SUPABASE_SERVICE_KEY",
   "target_store": {
     "store_name": "Example Store",
     "merchant_id": "MERCHANT_ID",

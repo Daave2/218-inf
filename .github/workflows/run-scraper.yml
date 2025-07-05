@@ -78,6 +78,7 @@ jobs:
             "otp_secret_key": "${{ secrets.OTP_SECRET_KEY }}",
             "inf_webhook_url": "${{ secrets.INF_WEBHOOK_URL }}",
             "email_report": false,
+            "enable_supabase_upload": false,
             "target_store": {
               "store_name": "${{ secrets.TARGET_STORE_NAME }}",
               "merchant_id": "${{ secrets.TARGET_MERCHANT_ID }}",
