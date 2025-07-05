@@ -2,6 +2,10 @@ import json
 import ssl
 import urllib.parse
 from datetime import datetime
+import asyncio
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 import aiohttp
 import aiofiles
@@ -16,6 +20,13 @@ from settings import (
     SMALL_IMAGE_SIZE,
     LOCAL_TIMEZONE,
     JSON_LOG_FILE,
+    EMAIL_REPORT,
+    SMTP_SERVER,
+    SMTP_PORT,
+    SMTP_USERNAME,
+    SMTP_PASSWORD,
+    EMAIL_FROM,
+    EMAIL_TO,
     app_logger,
     log_lock,
 )
@@ -119,3 +130,52 @@ async def post_inf_to_chat(items: list[dict]) -> None:
                     app_logger.error(f"Batch {idx} failed ({resp.status}): {text}")
         except Exception as e:
             app_logger.error(f"Error posting batch {idx}: {e}", exc_info=True)
+
+
+async def email_inf_report(items: list[dict]) -> None:
+    if not EMAIL_REPORT:
+        app_logger.info("Email report disabled; skipping email send.")
+        return
+    if not items:
+        app_logger.info("No items to email; skipping email send.")
+        return
+
+    ts = datetime.now(LOCAL_TIMEZONE).strftime("%A %d %B, %H:%M")
+    store = TARGET_STORE['store_name']
+
+    table_rows = "".join(
+        f"<tr><td>{it['sku']}</td><td>{it['product_name']}</td><td>{it['inf_units']}</td>"
+        f"<td>{it['orders_impacted']}</td><td>{it['inf_pct']}</td><td></td><td></td></tr>"
+        for it in items
+    )
+
+    html = f"""
+    <html>
+      <body>
+        <p>Top INF Items Report - {store} ({ts})</p>
+        <table border='1' cellpadding='4' cellspacing='0'>
+          <tr>
+            <th>SKU</th><th>Product</th><th>INF Units</th>
+            <th>Orders Impacted</th><th>INF %</th>
+            <th>Action taken</th><th>Actioned</th>
+          </tr>
+          {table_rows}
+        </table>
+      </body>
+    </html>
+    """
+
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = f"INF Report - {store}"
+    msg['From'] = EMAIL_FROM or ''
+    msg['To'] = EMAIL_TO or ''
+    msg.attach(MIMEText(html, 'html'))
+
+    def _send():
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as s:
+            s.starttls()
+            if SMTP_USERNAME:
+                s.login(SMTP_USERNAME, SMTP_PASSWORD)
+            s.sendmail(msg['From'], [msg['To']], msg.as_string())
+
+    await asyncio.to_thread(_send)

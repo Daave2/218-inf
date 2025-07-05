@@ -19,7 +19,7 @@ from settings import (
 )
 from auth import ensure_storage_state, check_if_login_needed, prime_master_session
 from scraper import scrape_inf_data
-from notifications import log_inf_results, post_inf_to_chat
+from notifications import log_inf_results, post_inf_to_chat, email_inf_report
 
 
 async def main(args):
@@ -57,6 +57,7 @@ async def main(args):
         app_logger.info(f"Retrieved {len(data)} INF items; logging and notifying")
         await log_inf_results(data)
         await post_inf_to_chat(data)
+        await email_inf_report(data)
 
     app_logger.info("Run complete; shutting down browser and Playwright")
     await browser.close()

@@ -44,6 +44,16 @@ INF_WEBHOOK   = config.get('inf_webhook_url')
 TARGET_STORE  = config['target_store']
 SINGLE_CARD   = config.get('single_card', False)
 
+# Email settings
+EMAIL_REPORT   = config.get('email_report', False)
+EMAIL_SETTINGS = config.get('email_settings', {})
+SMTP_SERVER    = EMAIL_SETTINGS.get('smtp_server')
+SMTP_PORT      = EMAIL_SETTINGS.get('smtp_port', 587)
+SMTP_USERNAME  = EMAIL_SETTINGS.get('smtp_username')
+SMTP_PASSWORD  = EMAIL_SETTINGS.get('smtp_password')
+EMAIL_FROM     = EMAIL_SETTINGS.get('from_addr')
+EMAIL_TO       = EMAIL_SETTINGS.get('to_addr')
+
 # Pre-built URL for navigating directly to the Inventory Insights page for the
 # configured store. Using this URL immediately after login bypasses the account
 # picker screen when multiple stores are associated with the credentials.
