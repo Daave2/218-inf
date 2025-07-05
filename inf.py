@@ -25,13 +25,15 @@ from notifications import log_inf_results, post_inf_to_chat, email_inf_report
 async def main(args):
     app_logger.info("Starting INF scraper run")
     playwright = await async_playwright().start()
-    browser    = await playwright.chromium.launch(headless=not DEBUG_MODE)
+    browser = await playwright.chromium.launch(headless=not DEBUG_MODE)
 
     login_required = True
     if ensure_storage_state():
         app_logger.info("Found existing storage_state; verifying session")
-        ctx  = await browser.new_context(storage_state=json.load(open(STORAGE_STATE)), ignore_https_errors=True)
-        pg   = await ctx.new_page()
+        ctx = await browser.new_context(
+            storage_state=json.load(open(STORAGE_STATE)), ignore_https_errors=True
+        )
+        pg = await ctx.new_page()
         login_required = await check_if_login_needed(pg, INVENTORY_URL)
         await ctx.close()
 
@@ -47,7 +49,9 @@ async def main(args):
 
     storage = json.load(open(STORAGE_STATE))
     app_logger.info("Beginning data scrape")
-    data = await scrape_inf_data(browser, TARGET_STORE, storage, fetch_yesterday=args.yesterday)
+    data = await scrape_inf_data(
+        browser, TARGET_STORE, storage, fetch_yesterday=args.yesterday
+    )
 
     if data is None:
         app_logger.error("Scrape returned None; aborting notifications")
@@ -63,8 +67,13 @@ async def main(args):
     await browser.close()
     await playwright.stop()
 
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Scrape Top INF Items from Amazon Seller Central.")
-    parser.add_argument("--yesterday", action="store_true", help="Fetch yesterday's data")
+    parser = argparse.ArgumentParser(
+        description="Scrape Top INF Items from Amazon Seller Central."
+    )
+    parser.add_argument(
+        "--yesterday", action="store_true", help="Fetch yesterday's data"
+    )
     args = parser.parse_args()
     asyncio.run(main(args))
