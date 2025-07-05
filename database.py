@@ -40,7 +40,7 @@ async def create_investigation_from_scrape(items: list[dict]) -> None:
             .insert({"name": investigation_name})
             .execute(),
         )
-        
+
         # --- CORRECTED ERROR HANDLING ---
         # In supabase-py v2, a successful response has data, and an unsuccessful one does not.
         # The error details are now within the response object itself.
@@ -53,7 +53,9 @@ async def create_investigation_from_scrape(items: list[dict]) -> None:
             raise Exception(f"Failed to create investigation: {error_message}")
 
         investigation_id = investigation_response.data[0]["id"]
-        app_logger.info(f"Successfully created investigation with ID: {investigation_id}")
+        app_logger.info(
+            f"Successfully created investigation with ID: {investigation_id}"
+        )
 
         # Step 2: Prepare product data for bulk insertion
         products_to_insert = [
@@ -79,7 +81,9 @@ async def create_investigation_from_scrape(items: list[dict]) -> None:
         app_logger.info(f"Inserting {len(products_to_insert)} products into Supabase.")
         products_response = await loop.run_in_executor(
             None,
-            lambda: supabase_client.table("products").insert(products_to_insert).execute(),
+            lambda: supabase_client.table("products")
+            .insert(products_to_insert)
+            .execute(),
         )
 
         # --- CORRECTED ERROR HANDLING ---
@@ -98,4 +102,6 @@ async def create_investigation_from_scrape(items: list[dict]) -> None:
         )
 
     except Exception as e:
-        app_logger.error(f"An error occurred during the Supabase update: {e}", exc_info=True)
+        app_logger.error(
+            f"An error occurred during the Supabase update: {e}", exc_info=True
+        )
