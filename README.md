@@ -6,7 +6,11 @@ This project collects "Item Not Found" (INF) metrics from Amazon Seller Central.
 
 1. **Python**: install Python 3.11.
 2. **Dependencies**: run `pip install -r requirements.txt`.
-3. **Configuration**: copy `config.example.json` to `config.json` and fill in the values. If `email_report` is enabled, configure the `email_settings` block with your SMTP server details.
+3. **Configuration**: copy `config.example.json` to `config.json` and fill in
+   the values. `thumbnail_size` controls the width of product images in
+   emails only (chat messages keep full-size images). If `email_report`
+   is enabled, configure the `email_settings` block with your SMTP server
+   details.
 4. **Run**: execute `python inf.py`. Use `--yesterday` to fetch the previous day's data.
 
 ## GitHub Actions
