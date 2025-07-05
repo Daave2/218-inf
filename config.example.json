@@ -20,6 +20,7 @@
   "marketplace_id": "YOUR_MARKETPLACE_ID",
   "target_url": "https://sellercentral.amazon.co.uk/snowdash?...",
   "debug": false,
+  "thumbnail_size": 150,
   "email_report": false,
   "email_settings": {
     "smtp_server": "smtp.example.com",

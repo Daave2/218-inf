@@ -18,6 +18,7 @@ from settings import (
     BATCH_SIZE,
     QR_CODE_SIZE,
     SMALL_IMAGE_SIZE,
+    EMAIL_THUMBNAIL_SIZE,
     LOCAL_TIMEZONE,
     JSON_LOG_FILE,
     EMAIL_REPORT,
@@ -172,7 +173,7 @@ async def email_inf_report(items: list[dict]) -> None:
 
     table_rows = "".join(
         f"<tr>"
-        f"<td><img src=\"{it['image_url']}\" alt=\"{it['product_name']}\" width=\"{SMALL_IMAGE_SIZE}\"></td>"
+        f"<td><img src=\"{it['image_url']}\" alt=\"{it['product_name']}\" width=\"{EMAIL_THUMBNAIL_SIZE}\"></td>"
         f"<td>{it['sku']}</td>"
         f"<td>{it['product_name']}</td>"
         f"<td>{it['inf_units']}</td>"
