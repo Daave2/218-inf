@@ -2,7 +2,12 @@ import asyncio
 from datetime import datetime
 import re
 
-from settings import app_logger, supabase_client, LOCAL_TIMEZONE, SMALL_IMAGE_SIZE
+from settings import (
+    app_logger,
+    supabase_client,
+    LOCAL_TIMEZONE,
+    SMALL_IMAGE_SIZE,
+)
 
 
 def clean_numeric_string(value: str) -> int:
@@ -11,6 +16,7 @@ def clean_numeric_string(value: str) -> int:
         return int(value.replace(",", ""))
     except (ValueError, AttributeError):
         return 0
+
 
 def get_larger_image_url(thumb_url: str | None) -> str | None:
     """Converts an Amazon thumbnail URL to a larger image URL."""
@@ -32,34 +38,45 @@ async def create_investigation_from_scrape(items: list[dict]) -> None:
         app_logger.warning("Supabase client not configured. Skipping database update.")
         return
 
+    # Group investigations by date so each day reuses the same record
     investigation_name = (
-        f"INF Scrape - {datetime.now(LOCAL_TIMEZONE).strftime('%Y-%m-%d %H:%M')}"
+        f"INF Scrape - {datetime.now(LOCAL_TIMEZONE).strftime('%Y-%m-%d')}"
     )
-    app_logger.info(f"Creating new investigation in Supabase: '{investigation_name}'")
 
     try:
         # The supabase-py client is sync, so we run it in an executor
         # to avoid blocking the asyncio event loop.
         loop = asyncio.get_running_loop()
 
-        # Step 1: Create a new investigation record and get its ID
-        investigation_response = await loop.run_in_executor(
-            None,
-            lambda: supabase_client.table("investigations")
-            .insert({"name": investigation_name})
-            .execute(),
-        )
-        
-        if not investigation_response.data:
-            error_message = (
-                investigation_response.message
-                if hasattr(investigation_response, "message")
-                else "Unknown error"
+        # Step 1: Find or create investigation for the day
+        def _get_or_create_investigation():
+            existing = (
+                supabase_client.table("investigations")
+                .select("id")
+                .eq("name", investigation_name)
+                .single()
+                .execute()
             )
-            raise Exception(f"Failed to create investigation: {error_message}")
+            if existing.data:
+                return existing.data["id"]
+            created = (
+                supabase_client.table("investigations")
+                .insert({"name": investigation_name})
+                .execute()
+            )
+            if not created.data:
+                msg = (
+                    created.message if hasattr(created, "message") else "Unknown error"
+                )
+                raise Exception(f"Failed to create investigation: {msg}")
+            return created.data[0]["id"]
 
-        investigation_id = investigation_response.data[0]["id"]
-        app_logger.info(f"Successfully created investigation with ID: {investigation_id}")
+        investigation_id = await loop.run_in_executor(
+            None, _get_or_create_investigation
+        )
+        app_logger.info(
+            f"Using investigation '{investigation_name}' with ID: {investigation_id}"
+        )
 
         # Step 2: Prepare product data for bulk insertion, now including the image URL.
         products_to_insert = [
@@ -83,11 +100,15 @@ async def create_investigation_from_scrape(items: list[dict]) -> None:
             app_logger.warning("No valid items to insert into database.")
             return
 
-        # Step 3: Bulk insert all products
-        app_logger.info(f"Inserting {len(products_to_insert)} products into Supabase.")
+        # Step 3: Upsert products for the investigation
+        app_logger.info(
+            f"Upserting {len(products_to_insert)} products for investigation {investigation_id}."
+        )
         products_response = await loop.run_in_executor(
             None,
-            lambda: supabase_client.table("products").insert(products_to_insert).execute(),
+            lambda: supabase_client.table("products")
+            .upsert(products_to_insert, on_conflict="investigation_id,sku")
+            .execute(),
         )
 
         if not products_response.data:
@@ -99,9 +120,11 @@ async def create_investigation_from_scrape(items: list[dict]) -> None:
             raise Exception(f"Failed to insert products: {error_message}")
 
         app_logger.info(
-            "Successfully inserted all products into Supabase for investigation "
+            "Products successfully upserted in Supabase for investigation "
             f"ID {investigation_id}."
         )
 
     except Exception as e:
-        app_logger.error(f"An error occurred during the Supabase update: {e}", exc_info=True)
+        app_logger.error(
+            f"An error occurred during the Supabase update: {e}", exc_info=True
+        )
