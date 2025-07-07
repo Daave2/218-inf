@@ -128,3 +128,27 @@ async def create_investigation_from_scrape(items: list[dict]) -> None:
         app_logger.error(
             f"An error occurred during the Supabase update: {e}", exc_info=True
         )
+
+
+async def get_investigation_projects(
+    investigation_id: int, organization: str | None = None
+) -> list[dict]:
+    """Return projects for an investigation, optionally filtered by organization."""
+    if not supabase_client:
+        app_logger.warning("Supabase client not configured. Skipping database query.")
+        return []
+
+    loop = asyncio.get_running_loop()
+
+    def _fetch():
+        query = (
+            supabase_client.table("projects")
+            .select("*")
+            .eq("investigation_id", investigation_id)
+        )
+        if organization:
+            query = query.eq("organization", organization)
+        return query.execute()
+
+    result = await loop.run_in_executor(None, _fetch)
+    return result.data or []
