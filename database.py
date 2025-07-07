@@ -57,7 +57,7 @@ async def create_investigation_from_scrape(items: list[dict]) -> None:
                 .maybe_single()
                 .execute()
             )
-            if existing.data:
+            if existing and existing.data:
                 return existing.data["id"]
             created = (
                 supabase_client.table("investigations")
