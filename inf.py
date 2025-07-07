@@ -17,9 +17,16 @@ from settings import (
     STORAGE_STATE,
     INVENTORY_URL,
     ENABLE_SUPABASE_UPLOAD,
+    LOGIN_RETRIES,
+    SCRAPE_RETRIES,
 )
-from auth import ensure_storage_state, check_if_login_needed, prime_master_session
-from scraper import scrape_inf_data
+from auth import (
+    ensure_storage_state,
+    check_if_login_needed,
+    prime_master_session,
+    login_with_retries,
+)
+from scraper import scrape_inf_data, scrape_with_retries
 from notifications import log_inf_results, post_inf_to_chat, email_inf_report
 from database import create_investigation_from_scrape
 
@@ -41,7 +48,7 @@ async def main(args):
 
     if login_required:
         app_logger.info("No valid session; logging in")
-        if not await prime_master_session(browser):
+        if not await login_with_retries(browser, LOGIN_RETRIES):
             app_logger.critical("Login failed; aborting run")
             await browser.close()
             await playwright.stop()
@@ -51,8 +58,12 @@ async def main(args):
 
     storage = json.load(open(STORAGE_STATE))
     app_logger.info("Beginning data scrape")
-    data = await scrape_inf_data(
-        browser, TARGET_STORE, storage, fetch_yesterday=args.yesterday
+    data = await scrape_with_retries(
+        browser,
+        TARGET_STORE,
+        storage,
+        fetch_yesterday=args.yesterday,
+        attempts=SCRAPE_RETRIES,
     )
 
     if data is None:

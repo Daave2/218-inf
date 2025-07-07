@@ -6,6 +6,7 @@ from settings import (
     PAGE_TIMEOUT,
     WAIT_TIMEOUT,
     TABLE_POLL_DELAY,
+    SORT_DELAY,
     SMALL_IMAGE_SIZE,
     DATE_FILTER_DELAY,
     app_logger,
@@ -13,14 +14,17 @@ from settings import (
 
 
 async def wait_for_table_change(
-    page: Page, table_sel: str, action: Callable[[], Awaitable]
+    page: Page,
+    table_sel: str,
+    action: Callable[[], Awaitable],
+    delay: float | None = None,
 ):
     first = page.locator(f"{table_sel} tr:first-child")
     text0 = ""
     if await first.count() > 0:
         text0 = await first.text_content() or ""
     await action()
-    await asyncio.sleep(TABLE_POLL_DELAY)
+    await asyncio.sleep(TABLE_POLL_DELAY if delay is None else delay)
     await page.wait_for_function(
         """([sel, init]) => {
             const el = document.querySelector(sel + ' tr:first-child');
@@ -88,7 +92,10 @@ async def scrape_inf_data(
 
         app_logger.info("Sorting table by 'INF Units'")
         await wait_for_table_change(
-            page, table_sel, lambda: page.locator("#sort-3").click()
+            page,
+            table_sel,
+            lambda: page.locator("#sort-3").click(),
+            delay=SORT_DELAY,
         )
 
         rows = await page.locator(f"{table_sel} tr").all()
@@ -126,3 +133,20 @@ async def scrape_inf_data(
 
     finally:
         await ctx.close()
+
+
+async def scrape_with_retries(
+    browser: Browser,
+    store_info: dict,
+    storage_state: dict,
+    fetch_yesterday: bool,
+    attempts: int,
+) -> list[dict] | None:
+    for attempt in range(1, attempts + 1):
+        data = await scrape_inf_data(
+            browser, store_info, storage_state, fetch_yesterday=fetch_yesterday
+        )
+        if data is not None:
+            return data
+        app_logger.warning(f"Scrape attempt {attempt} failed; retrying...")
+    return None
