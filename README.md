@@ -47,3 +47,8 @@ The workflow builds `config.json` from these secrets and runs `python inf.py`. A
 `run-scraper.yml` disables emailing, while `email-report.yml` omits the chat webhook.
 
 
+
+## Contributors
+
+- Daave2
+- Codex
