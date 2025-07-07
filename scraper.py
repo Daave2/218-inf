@@ -91,12 +91,18 @@ async def scrape_inf_data(
             )
 
         app_logger.info("Sorting table by 'INF Units'")
-        await wait_for_table_change(
-            page,
-            table_sel,
-            lambda: page.locator("#sort-3").click(),
-            delay=SORT_DELAY,
-        )
+        try:
+            await wait_for_table_change(
+                page,
+                table_sel,
+                lambda: page.locator("#sort-3").click(),
+                delay=SORT_DELAY,
+            )
+        except TimeoutError:
+            app_logger.warning(
+                "Timed out waiting for sort change—"
+                "table may already be sorted by INF Units."
+            )
 
         rows = await page.locator(f"{table_sel} tr").all()
         app_logger.info(f"Found {len(rows)} rows; extracting data")
