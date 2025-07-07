@@ -147,3 +147,11 @@ async def prime_master_session(browser: Browser) -> bool:
         return True
     finally:
         await ctx.close()
+
+
+async def login_with_retries(browser: Browser, attempts: int) -> bool:
+    for attempt in range(1, attempts + 1):
+        if await prime_master_session(browser):
+            return True
+        app_logger.warning(f"Login attempt {attempt} failed; retrying...")
+    return False

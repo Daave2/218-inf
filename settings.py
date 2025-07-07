@@ -10,6 +10,7 @@ from supabase import create_client, Client
 # Basic constants
 LOCAL_TIMEZONE = timezone("Europe/London")
 TABLE_POLL_DELAY = 1.0  # seconds to wait after table actions
+SORT_DELAY = 1.0  # wait after clicking a column header to sort
 DATE_FILTER_DELAY = 2.0  # extra wait after selecting the date filter
 BATCH_SIZE = 30  # max items per webhook message
 SMALL_IMAGE_SIZE = 300  # px for product thumbnails used in chat messages
@@ -94,8 +95,11 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 JSON_LOG_FILE = os.path.join(OUTPUT_DIR, "inf_items.jsonl")
 STORAGE_STATE = "state.json"
 
-PAGE_TIMEOUT = 90_000
-ACTION_TIMEOUT = 45_000
-WAIT_TIMEOUT = 45_000
+PAGE_TIMEOUT = 120_000
+ACTION_TIMEOUT = 60_000
+WAIT_TIMEOUT = 60_000
+
+LOGIN_RETRIES = 3
+SCRAPE_RETRIES = 3
 
 log_lock = asyncio.Lock()
