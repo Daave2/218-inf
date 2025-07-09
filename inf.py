@@ -58,11 +58,12 @@ async def main(args):
 
     storage = json.load(open(STORAGE_STATE))
     app_logger.info("Beginning data scrape")
+    fetch_yesterday = args.yesterday or EMAIL_REPORT
     data = await scrape_with_retries(
         browser,
         TARGET_STORE,
         storage,
-        fetch_yesterday=args.yesterday,
+        fetch_yesterday=fetch_yesterday,
         attempts=SCRAPE_RETRIES,
     )
 
@@ -73,11 +74,13 @@ async def main(args):
     else:
         app_logger.info(f"Retrieved {len(data)} INF items; processing...")
 
-        if ENABLE_SUPABASE_UPLOAD:
+        if ENABLE_SUPABASE_UPLOAD and not EMAIL_REPORT:
             app_logger.info("Supabase upload is enabled. Creating investigation...")
             await create_investigation_from_scrape(data)
         else:
-            app_logger.info("Supabase upload is disabled. Skipping database update.")
+            app_logger.info(
+                "Supabase upload disabled or email mode active. Skipping database update."
+            )
 
         # Run existing logging and notification steps
         await log_inf_results(data)

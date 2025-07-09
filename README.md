@@ -18,7 +18,8 @@ This project collects "Item Not Found" (INF) metrics from Amazon Seller Central.
 The repository contains two GitHub workflows:
 
 - `.github/workflows/run-scraper.yml` posts INF items to the chat webhook on a schedule and never emails the report.
-- `.github/workflows/email-report.yml` sends the daily email report only.
+- `.github/workflows/email-report.yml` sends the daily email report only. It
+  always scrapes **yesterday's** data and skips Supabase updates.
 
 Configure the following repository secrets used by the workflows:
 
