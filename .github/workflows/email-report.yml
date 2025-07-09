@@ -78,7 +78,7 @@ jobs:
             "otp_secret_key": "${{ secrets.OTP_SECRET_KEY }}",
             "inf_webhook_url": "",
             "email_report": true,
-            "enable_supabase_upload": true,
+            "enable_supabase_upload": false,
             "supabase_url": "${{ secrets.SUPABASE_URL }}",
             "supabase_service_key": "${{ secrets.SUPABASE_SERVICE_KEY }}",
             "email_settings": {
