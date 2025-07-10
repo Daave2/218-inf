@@ -17,6 +17,7 @@ from settings import (
     STORAGE_STATE,
     INVENTORY_URL,
     ENABLE_SUPABASE_UPLOAD,
+    EMAIL_REPORT,
     LOGIN_RETRIES,
     SCRAPE_RETRIES,
 )
