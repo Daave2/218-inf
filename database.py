@@ -30,25 +30,18 @@ def get_larger_image_url(thumb_url: str | None) -> str | None:
 async def create_investigation_from_scrape(items: list[dict]) -> None:
     """
     Creates a new investigation in Supabase and populates it with scraped items.
-
-    This function mimics the "create investigation" flow from the web app,
-    creating a new batch and adding the scraped products to it.
     """
     if not supabase_client:
         app_logger.warning("Supabase client not configured. Skipping database update.")
         return
 
-    # Group investigations by date so each day reuses the same record
     investigation_name = (
         f"INF Scrape - {datetime.now(LOCAL_TIMEZONE).strftime('%Y-%m-%d')}"
     )
 
     try:
-        # The supabase-py client is sync, so we run it in an executor
-        # to avoid blocking the asyncio event loop.
         loop = asyncio.get_running_loop()
 
-        # Step 1: Find or create investigation for the day
         def _get_or_create_investigation():
             existing = (
                 supabase_client.table("investigations")
@@ -78,20 +71,23 @@ async def create_investigation_from_scrape(items: list[dict]) -> None:
             f"Using investigation '{investigation_name}' with ID: {investigation_id}"
         )
 
-        # Step 2: Prepare product data for bulk insertion, now including the image URL.
         products_to_insert = [
             {
                 "investigation_id": investigation_id,
                 "sku": item.get("sku"),
                 "product_name": item.get("product_name"),
-                # --- NEWLY ADDED FIELD ---
                 "image_url": get_larger_image_url(item.get("image_url")),
                 "inf_units": clean_numeric_string(item.get("inf_units", "0")),
                 "orders_impacted": clean_numeric_string(
                     item.get("orders_impacted", "0")
                 ),
                 "successful_substitution_percent": item.get("inf_pct", "0%"),
-                "status": "pending",  # Default status for new items
+                "status": "pending",
+                "stock_on_hand": item.get("stock_on_hand"),
+                "stock_unit": item.get("stock_unit"),
+                "stock_last_updated": item.get("stock_last_updated"),
+                "std_location": item.get("std_location"),
+                "promo_location": item.get("promo_location"),
             }
             for item in items
         ]
@@ -100,7 +96,6 @@ async def create_investigation_from_scrape(items: list[dict]) -> None:
             app_logger.warning("No valid items to insert into database.")
             return
 
-        # Step 3: Upsert products for the investigation
         app_logger.info(
             f"Upserting {len(products_to_insert)} products for investigation {investigation_id}."
         )

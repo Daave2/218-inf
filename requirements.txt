@@ -7,3 +7,4 @@ aiohttp
 certifi
 aiofiles
 supabase
+requests

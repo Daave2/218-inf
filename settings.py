@@ -61,6 +61,17 @@ elif ENABLE_SUPABASE_UPLOAD:
     )
 
 
+# Stock Checker settings
+ENABLE_STOCK_LOOKUP = config.get("enable_stock_lookup", False)
+MORRISONS_API_KEY = config.get("morrisons_api_key")
+MORRISONS_BEARER_TOKEN = config.get("morrisons_bearer_token")
+MORRISONS_LOCATION_ID = config.get("target_store", {}).get("morrisons_location_id")
+if ENABLE_STOCK_LOOKUP and not all([MORRISONS_API_KEY, MORRISONS_LOCATION_ID]):
+    app_logger.warning(
+        "Stock lookup is enabled, but Morrisons API key or location ID is missing."
+    )
+
+
 EMAIL_THUMBNAIL_SIZE = config.get("thumbnail_size", EMAIL_THUMBNAIL_SIZE)
 
 DEBUG_MODE = config.get("debug", False)

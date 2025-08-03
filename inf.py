@@ -1,10 +1,3 @@
-# ==============================================================================
-#    AMAZON SELLER CENTRAL - TOP INF ITEMS SCRAPER (V3.2.4 - FINAL LOGIC)
-# ==============================================================================
-# This script logs into Amazon Seller Central, navigates to the Inventory Insights
-# page, and scrapes the top "Item Not Found" (INF) products.
-# ==============================================================================
-
 import argparse
 import asyncio
 import json
@@ -20,16 +13,17 @@ from settings import (
     EMAIL_REPORT,
     LOGIN_RETRIES,
     SCRAPE_RETRIES,
+    ENABLE_STOCK_LOOKUP,
 )
 from auth import (
     ensure_storage_state,
     check_if_login_needed,
-    prime_master_session,
     login_with_retries,
 )
-from scraper import scrape_inf_data, scrape_with_retries
+from scraper import scrape_with_retries
 from notifications import log_inf_results, post_inf_to_chat, email_inf_report
 from database import create_investigation_from_scrape
+from stock_checker import enrich_items_with_stock_data
 
 
 async def main(args):
@@ -74,6 +68,12 @@ async def main(args):
         app_logger.info("No INF items found for the period")
     else:
         app_logger.info(f"Retrieved {len(data)} INF items; processing...")
+
+        if ENABLE_STOCK_LOOKUP:
+            app_logger.info("Stock lookup enabled. Enriching items...")
+            data = await enrich_items_with_stock_data(data)
+        else:
+            app_logger.info("Stock lookup disabled. Skipping enrichment.")
 
         if ENABLE_SUPABASE_UPLOAD and not EMAIL_REPORT:
             app_logger.info("Supabase upload is enabled. Creating investigation...")

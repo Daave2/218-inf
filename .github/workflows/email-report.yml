@@ -81,6 +81,9 @@ jobs:
             "enable_supabase_upload": false,
             "supabase_url": "${{ secrets.SUPABASE_URL }}",
             "supabase_service_key": "${{ secrets.SUPABASE_SERVICE_KEY }}",
+            "enable_stock_lookup": true,
+            "morrisons_api_key": "${{ secrets.MORRISONS_API_KEY }}",
+            "morrisons_bearer_token": "${{ secrets.MORRISONS_BEARER_TOKEN }}",
             "email_settings": {
               "smtp_server": "${{ secrets.SMTP_SERVER }}",
               "smtp_port": "${{ secrets.SMTP_PORT }}",
@@ -92,7 +95,8 @@ jobs:
             "target_store": {
               "store_name": "${{ secrets.TARGET_STORE_NAME }}",
               "merchant_id": "${{ secrets.TARGET_MERCHANT_ID }}",
-              "marketplace_id": "${{ secrets.TARGET_MARKETPLACE_ID }}"
+              "marketplace_id": "${{ secrets.TARGET_MARKETPLACE_ID }}",
+              "morrisons_location_id": "${{ secrets.TARGET_MORRISONS_LOCATION_ID }}"
             }
           }' > config.json
 

@@ -28,6 +28,7 @@ from settings import (
     SMTP_PASSWORD,
     EMAIL_FROM,
     EMAIL_TO,
+    ENABLE_STOCK_LOOKUP,
     app_logger,
     log_lock,
 )
@@ -61,20 +62,32 @@ async def post_inf_to_chat(items: list[dict]) -> None:
 
     if SINGLE_CARD:
         batches = [items[:BATCH_SIZE]]
-        app_logger.info(
-            f"SINGLE_CARD enabled: sending 1 card with up to {BATCH_SIZE} items"
-        )
     else:
         batches = [items[i : i + BATCH_SIZE] for i in range(0, len(items), BATCH_SIZE)]
-        app_logger.info(
-            f"SENDING {len(batches)} batch(es) of up to {BATCH_SIZE} items each"
-        )
+
+    app_logger.info(
+        f"Sending {len(batches)} batch(es) of up to {BATCH_SIZE} items each."
+    )
 
     for idx, batch in enumerate(batches, start=1):
         widgets = [{"divider": {}}]
         for it in batch:
             code = urllib.parse.quote(it["sku"])
             qr = f"https://api.qrserver.com/v1/create-qr-code/?size={QR_CODE_SIZE}x{QR_CODE_SIZE}&data={code}"
+
+            extra_info = ""
+            if ENABLE_STOCK_LOOKUP:
+                stock_on_hand = it.get("stock_on_hand")
+                if stock_on_hand is not None:
+                    extra_info += f"<br><b>Stock Record:</b> {stock_on_hand}"
+                else:
+                    extra_info += "<br><b>Stock Record:</b> Not Found"
+
+                if it.get("std_location"):
+                    extra_info += f"<br><b>Std Loc:</b> {it['std_location']}"
+                if it.get("promo_location"):
+                    extra_info += f"<br><b>Promo Loc:</b> {it['promo_location']}"
+
             widgets += [
                 {
                     "columns": {
@@ -83,14 +96,7 @@ async def post_inf_to_chat(items: list[dict]) -> None:
                                 "horizontalSizeStyle": "FILL_MINIMUM_SPACE",
                                 "horizontalAlignment": "CENTER",
                                 "verticalAlignment": "CENTER",
-                                "widgets": [
-                                    {
-                                        "image": {
-                                            "imageUrl": qr,
-                                            "altText": f"QR {it['sku']}",
-                                        }
-                                    }
-                                ],
+                                "widgets": [{"image": {"imageUrl": qr}}],
                             },
                             {
                                 "horizontalSizeStyle": "FILL_AVAILABLE_SPACE",
@@ -102,15 +108,11 @@ async def post_inf_to_chat(items: list[dict]) -> None:
                                                 f"<b>SKU:</b> {it['sku']}<br>"
                                                 f"<b>INF Units:</b> {it['inf_units']} ({it['inf_pct']}) | "
                                                 f"<b>Orders:</b> {it['orders_impacted']}"
+                                                f"{extra_info}"
                                             )
                                         }
                                     },
-                                    {
-                                        "image": {
-                                            "imageUrl": it["image_url"],
-                                            "altText": it["product_name"],
-                                        }
-                                    },
+                                    {"image": {"imageUrl": it["image_url"]}},
                                 ],
                             },
                         ]
@@ -119,16 +121,14 @@ async def post_inf_to_chat(items: list[dict]) -> None:
                 {"divider": {}},
             ]
 
-        total = len(batches)
         subtitle = f"Sorted by INF Units | {ts}"
         if not SINGLE_CARD:
-            subtitle += f" | batch {idx}/{total}"
+            subtitle += f" | batch {idx}/{len(batches)}"
 
         payload = {
             "cardsV2": [
                 {
-                    "cardId": f"inf-report-{store.replace(' ', '-')}"
-                    + (f"-b{idx}" if not SINGLE_CARD else ""),
+                    "cardId": f"inf-report-{store.replace(' ', '-')}-{idx}",
                     "card": {
                         "header": {
                             "title": f"Top INF Items Report - {store}",
@@ -141,7 +141,6 @@ async def post_inf_to_chat(items: list[dict]) -> None:
                 }
             ]
         }
-
         app_logger.info(f"Posting batch {idx}/{len(batches)} with {len(batch)} items")
         try:
             async with aiohttp.ClientSession(
@@ -162,7 +161,6 @@ async def post_inf_to_chat(items: list[dict]) -> None:
 
 async def email_inf_report(items: list[dict]) -> None:
     if not EMAIL_REPORT:
-        app_logger.info("Email report disabled; skipping email send.")
         return
     if not items:
         app_logger.info("No items to email; skipping email send.")
@@ -173,13 +171,16 @@ async def email_inf_report(items: list[dict]) -> None:
 
     table_rows = "".join(
         f"<tr>"
-        f"<td><img src=\"{it['image_url']}\" alt=\"{it['product_name']}\" width=\"{EMAIL_THUMBNAIL_SIZE}\"></td>"
+        f"<td><img src=\"{it['image_url']}\" width=\"{EMAIL_THUMBNAIL_SIZE}\"></td>"
         f"<td>{it['sku']}</td>"
         f"<td>{it['product_name']}</td>"
         f"<td>{it['inf_units']}</td>"
         f"<td>{it['orders_impacted']}</td>"
         f"<td>{it['inf_pct']}</td>"
-        f"<td><img src=\"https://api.qrserver.com/v1/create-qr-code/?size={QR_CODE_SIZE}x{QR_CODE_SIZE}&data={urllib.parse.quote(it['sku'])}\" alt=\"QR {it['sku']}\"></td>"
+        f"<td>{it.get('stock_on_hand', '')}</td>"
+        f"<td>{it.get('std_location', '')}</td>"
+        f"<td>{it.get('promo_location', '')}</td>"
+        f"<td><img src=\"https://api.qrserver.com/v1/create-qr-code/?size={QR_CODE_SIZE}x{QR_CODE_SIZE}&data={urllib.parse.quote(it['sku'])}\"></td>"
         f"<td></td><td></td>"
         f"</tr>"
         for it in items
@@ -187,13 +188,22 @@ async def email_inf_report(items: list[dict]) -> None:
 
     html = f"""
     <html>
+      <head>
+        <style>
+          table {{ border-collapse: collapse; width: 100%; font-family: sans-serif; font-size: 12px; }}
+          th, td {{ border: 1px solid #dddddd; text-align: left; padding: 8px; vertical-align: middle; }}
+          tr:nth-child(even) {{ background-color: #f2f2f2; }}
+          img {{ display: block; }}
+        </style>
+      </head>
       <body>
         <p>Top INF Items Report - {store} ({ts})</p>
         <table border='1' cellpadding='4' cellspacing='0'>
           <tr>
             <th>Image</th><th>SKU</th><th>Product</th><th>INF Units</th>
-            <th>Orders Impacted</th><th>INF %</th><th>QR Code</th>
-            <th>Action taken</th><th>Actioned</th>
+            <th>Orders</th><th>INF %</th><th>Stock</th>
+            <th>Std Loc</th><th>Promo Loc</th><th>QR Code</th>
+            <th>Action Taken</th><th>Actioned</th>
           </tr>
           {table_rows}
         </table>
@@ -214,4 +224,8 @@ async def email_inf_report(items: list[dict]) -> None:
                 s.login(SMTP_USERNAME, SMTP_PASSWORD)
             s.sendmail(msg["From"], [msg["To"]], msg.as_string())
 
-    await asyncio.to_thread(_send)
+    try:
+        await asyncio.to_thread(_send)
+        app_logger.info(f"Email report sent to {EMAIL_TO}")
+    except Exception as e:
+        app_logger.error(f"Failed to send email report: {e}", exc_info=True)
