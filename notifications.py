@@ -63,10 +63,7 @@ async def post_inf_to_chat(items: list[dict]) -> None:
     if ENABLE_STOCK_LOOKUP:
         zero_stock = [it for it in items if it.get("stock_on_hand") == 0]
         extra_locs = [
-            it
-            for it in items
-            if it not in zero_stock
-            and (it.get("std_location") or it.get("promo_location"))
+            it for it in items if it not in zero_stock and it.get("promo_location")
         ]
         others = [it for it in items if it not in zero_stock and it not in extra_locs]
         categories = [
