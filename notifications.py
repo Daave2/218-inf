@@ -60,103 +60,139 @@ async def post_inf_to_chat(items: list[dict]) -> None:
     ts = datetime.now(LOCAL_TIMEZONE).strftime("%A %d %B, %H:%M")
     store = TARGET_STORE["store_name"]
 
-    if SINGLE_CARD:
-        batches = [items[:BATCH_SIZE]]
+    if ENABLE_STOCK_LOOKUP:
+        zero_stock = [it for it in items if it.get("stock_on_hand") == 0]
+        extra_locs = [
+            it
+            for it in items
+            if it not in zero_stock
+            and (it.get("std_location") or it.get("promo_location"))
+        ]
+        others = [it for it in items if it not in zero_stock and it not in extra_locs]
+        categories = [
+            ("Stock with 0 stock record", zero_stock),
+            ("Items with additional locations", extra_locs),
+            ("Everything else", others),
+        ]
     else:
-        batches = [items[i : i + BATCH_SIZE] for i in range(0, len(items), BATCH_SIZE)]
+        categories = [("INF Items", items)]
 
-    app_logger.info(
-        f"Sending {len(batches)} batch(es) of up to {BATCH_SIZE} items each."
-    )
+    for cat_label, cat_items in categories:
+        if not cat_items:
+            continue
 
-    for idx, batch in enumerate(batches, start=1):
-        widgets = [{"divider": {}}]
-        for it in batch:
-            code = urllib.parse.quote(it["sku"])
-            qr = f"https://api.qrserver.com/v1/create-qr-code/?size={QR_CODE_SIZE}x{QR_CODE_SIZE}&data={code}"
-
-            extra_info = ""
-            if ENABLE_STOCK_LOOKUP:
-                stock_on_hand = it.get("stock_on_hand")
-                if stock_on_hand is not None:
-                    extra_info += f"<br><b>Stock Record:</b> {stock_on_hand}"
-                else:
-                    extra_info += "<br><b>Stock Record:</b> Not Found"
-
-                if it.get("std_location"):
-                    extra_info += f"<br><b>Std Loc:</b> {it['std_location']}"
-                if it.get("promo_location"):
-                    extra_info += f"<br><b>Promo Loc:</b> {it['promo_location']}"
-
-            widgets += [
-                {
-                    "columns": {
-                        "columnItems": [
-                            {
-                                "horizontalSizeStyle": "FILL_MINIMUM_SPACE",
-                                "horizontalAlignment": "CENTER",
-                                "verticalAlignment": "CENTER",
-                                "widgets": [{"image": {"imageUrl": qr}}],
-                            },
-                            {
-                                "horizontalSizeStyle": "FILL_AVAILABLE_SPACE",
-                                "widgets": [
-                                    {
-                                        "textParagraph": {
-                                            "text": (
-                                                f"<b>{it['product_name']}</b><br>"
-                                                f"<b>SKU:</b> {it['sku']}<br>"
-                                                f"<b>INF Units:</b> {it['inf_units']} ({it['inf_pct']}) | "
-                                                f"<b>Orders:</b> {it['orders_impacted']}"
-                                                f"{extra_info}"
-                                            )
-                                        }
-                                    },
-                                    {"image": {"imageUrl": it["image_url"]}},
-                                ],
-                            },
-                        ]
-                    }
-                },
-                {"divider": {}},
+        if SINGLE_CARD:
+            batches = [cat_items[:BATCH_SIZE]]
+        else:
+            batches = [
+                cat_items[i : i + BATCH_SIZE]
+                for i in range(0, len(cat_items), BATCH_SIZE)
             ]
 
-        subtitle = f"Sorted by INF Units | {ts}"
-        if not SINGLE_CARD:
-            subtitle += f" | batch {idx}/{len(batches)}"
+        app_logger.info(
+            f"Sending {len(batches)} batch(es) for '{cat_label}' with up to {BATCH_SIZE} items each."
+        )
 
-        payload = {
-            "cardsV2": [
-                {
-                    "cardId": f"inf-report-{store.replace(' ', '-')}-{idx}",
-                    "card": {
-                        "header": {
-                            "title": f"Top INF Items Report - {store}",
-                            "subtitle": subtitle,
-                            "imageUrl": "https://cdn-icons-png.flaticon.com/512/2838/2838885.png",
-                            "imageType": "CIRCLE",
-                        },
-                        "sections": [{"widgets": widgets}],
+        cat_slug = cat_label.lower().replace(" ", "-")
+        for idx, batch in enumerate(batches, start=1):
+            widgets = [{"divider": {}}]
+            for it in batch:
+                code = urllib.parse.quote(it["sku"])
+                qr = (
+                    "https://api.qrserver.com/v1/create-qr-code/?size="
+                    f"{QR_CODE_SIZE}x{QR_CODE_SIZE}&data={code}"
+                )
+
+                extra_info = ""
+                if ENABLE_STOCK_LOOKUP:
+                    stock_on_hand = it.get("stock_on_hand")
+                    if stock_on_hand is not None:
+                        extra_info += f"<br><b>Stock Record:</b> {stock_on_hand}"
+                    else:
+                        extra_info += "<br><b>Stock Record:</b> Not Found"
+
+                    if it.get("std_location"):
+                        extra_info += f"<br><b>Std Loc:</b> {it['std_location']}"
+                    if it.get("promo_location"):
+                        extra_info += f"<br><b>Promo Loc:</b> {it['promo_location']}"
+
+                widgets += [
+                    {
+                        "columns": {
+                            "columnItems": [
+                                {
+                                    "horizontalSizeStyle": "FILL_MINIMUM_SPACE",
+                                    "horizontalAlignment": "CENTER",
+                                    "verticalAlignment": "CENTER",
+                                    "widgets": [{"image": {"imageUrl": qr}}],
+                                },
+                                {
+                                    "horizontalSizeStyle": "FILL_AVAILABLE_SPACE",
+                                    "widgets": [
+                                        {
+                                            "textParagraph": {
+                                                "text": (
+                                                    f"<b>{it['product_name']}</b><br>"
+                                                    f"<b>SKU:</b> {it['sku']}<br>"
+                                                    f"<b>INF Units:</b> {it['inf_units']} ({it['inf_pct']}) | "
+                                                    f"<b>Orders:</b> {it['orders_impacted']}"
+                                                    f"{extra_info}"
+                                                )
+                                            }
+                                        },
+                                        {"image": {"imageUrl": it["image_url"]}},
+                                    ],
+                                },
+                            ]
+                        }
                     },
-                }
-            ]
-        }
-        app_logger.info(f"Posting batch {idx}/{len(batches)} with {len(batch)} items")
-        try:
-            async with aiohttp.ClientSession(
-                timeout=aiohttp.ClientTimeout(total=30),
-                connector=aiohttp.TCPConnector(
-                    ssl=ssl.create_default_context(cafile=certifi.where())
-                ),
-            ) as session:
-                resp = await session.post(INF_WEBHOOK, json=payload)
-                if resp.status == 200:
-                    app_logger.info(f"Posted batch {idx}/{len(batches)} successfully")
-                else:
-                    text = await resp.text()
-                    app_logger.error(f"Batch {idx} failed ({resp.status}): {text}")
-        except Exception as e:
-            app_logger.error(f"Error posting batch {idx}: {e}", exc_info=True)
+                    {"divider": {}},
+                ]
+
+            subtitle = f"{cat_label} | {ts}"
+            if not SINGLE_CARD:
+                subtitle += f" | batch {idx}/{len(batches)}"
+
+            payload = {
+                "cardsV2": [
+                    {
+                        "cardId": f"inf-report-{store.replace(' ', '-')}-{cat_slug}-{idx}",
+                        "card": {
+                            "header": {
+                                "title": f"Top INF Items Report - {store}",
+                                "subtitle": subtitle,
+                                "imageUrl": "https://cdn-icons-png.flaticon.com/512/2838/2838885.png",
+                                "imageType": "CIRCLE",
+                            },
+                            "sections": [{"widgets": widgets}],
+                        },
+                    }
+                ]
+            }
+            app_logger.info(
+                f"Posting '{cat_label}' batch {idx}/{len(batches)} with {len(batch)} items"
+            )
+            try:
+                async with aiohttp.ClientSession(
+                    timeout=aiohttp.ClientTimeout(total=30),
+                    connector=aiohttp.TCPConnector(
+                        ssl=ssl.create_default_context(cafile=certifi.where())
+                    ),
+                ) as session:
+                    resp = await session.post(INF_WEBHOOK, json=payload)
+                    if resp.status == 200:
+                        app_logger.info(
+                            f"Posted '{cat_label}' batch {idx}/{len(batches)} successfully"
+                        )
+                    else:
+                        text = await resp.text()
+                        app_logger.error(
+                            f"{cat_label} batch {idx} failed ({resp.status}): {text}"
+                        )
+            except Exception as e:
+                app_logger.error(
+                    f"Error posting '{cat_label}' batch {idx}: {e}", exc_info=True
+                )
 
 
 async def email_inf_report(items: list[dict]) -> None:
