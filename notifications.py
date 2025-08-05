@@ -136,20 +136,8 @@ async def post_inf_to_chat(items: list[dict]) -> None:
                                                     f"{extra_info}"
                                                 )
                                             }
-                                        }
-                                    ],
-                                },
-                                {
-                                    "horizontalSizeStyle": "FILL_MINIMUM_SPACE",
-                                    "horizontalAlignment": "CENTER",
-                                    "verticalAlignment": "CENTER",
-                                    "widgets": [
-                                        {
-                                            "image": {
-                                                "imageUrl": it["image_url"],
-                                                "width": SMALL_IMAGE_SIZE,
-                                            }
-                                        }
+                                        },
+                                        {"image": {"imageUrl": it["image_url"]}},
                                     ],
                                 },
                             ]
