@@ -88,6 +88,7 @@ async def create_investigation_from_scrape(items: list[dict]) -> None:
                 "stock_last_updated": item.get("stock_last_updated"),
                 "std_location": item.get("std_location"),
                 "promo_location": item.get("promo_location"),
+                "aisle_number": item.get("aisle_number"),
             }
             for item in items
         ]
