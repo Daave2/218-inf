@@ -71,13 +71,14 @@ def simplify_locations(lst: list[dict]) -> str:
     return "; ".join(nice_loc(l) for l in lst) if lst else ""
 
 
-def extract_location_bits(pi: dict | None) -> tuple[str, str]:
+def extract_location_bits(pi: dict | None) -> tuple[str, str, str | None]:
     if not pi:
-        return "", ""
+        return "", "", None
     space = pi.get("space", {})
     std_lst = space.get("standardSpace", {}).get("locations", [])
     promo_lst = space.get("promotionalSpace", {}).get("locations", [])
-    return simplify_locations(std_lst), simplify_locations(promo_lst)
+    aisle_number = std_lst[0].get("aisle") if std_lst else None
+    return simplify_locations(std_lst), simplify_locations(promo_lst), aisle_number
 
 
 def _fetch_morrisons_data_for_sku(sku: str) -> dict[str, Any]:
@@ -126,9 +127,10 @@ def _fetch_morrisons_data_for_sku(sku: str) -> dict[str, Any]:
         pi_url = f"{BASE_LOCN}/{MORRISONS_LOCATION_ID}/items/{pi_sku}?apikey={MORRISONS_API_KEY}"
         pi_data = _fetch_json(pi_url, MORRISONS_BEARER_TOKEN)
         if pi_data:
-            std_loc, promo_loc = extract_location_bits(pi_data)
+            std_loc, promo_loc, aisle_number = extract_location_bits(pi_data)
             results["std_location"] = std_loc
             results["promo_location"] = promo_loc
+            results["aisle_number"] = aisle_number
             app_logger.info(f"Found locations for PI SKU {pi_sku}")
 
         return results

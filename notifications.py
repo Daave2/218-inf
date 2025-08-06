@@ -57,6 +57,14 @@ async def post_inf_to_chat(items: list[dict]) -> None:
         app_logger.info("No items to post; skipping chat post.")
         return
 
+    def _aisle_sort_key(it: dict) -> int:
+        try:
+            return int(it.get("aisle_number"))
+        except (TypeError, ValueError):
+            return float("inf")
+
+    items = sorted(items, key=_aisle_sort_key)
+
     ts = datetime.now(LOCAL_TIMEZONE).strftime("%A %d %B, %H:%M")
     store = TARGET_STORE["store_name"]
 
@@ -77,6 +85,8 @@ async def post_inf_to_chat(items: list[dict]) -> None:
     for cat_label, cat_items in categories:
         if not cat_items:
             continue
+
+        cat_items.sort(key=_aisle_sort_key)
 
         if SINGLE_CARD:
             batches = [cat_items[:BATCH_SIZE]]
