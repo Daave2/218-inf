@@ -1,11 +1,13 @@
-import os
+import asyncio
 import json
 import logging
+import os
 from datetime import datetime
-from pytz import timezone
 from logging.handlers import RotatingFileHandler
-import asyncio
-from supabase import create_client, Client
+
+import requests
+from pytz import timezone
+from supabase import Client, create_client
 
 # Basic constants
 LOCAL_TIMEZONE = timezone("Europe/London")
@@ -64,8 +66,26 @@ elif ENABLE_SUPABASE_UPLOAD:
 # Stock Checker settings
 ENABLE_STOCK_LOOKUP = config.get("enable_stock_lookup", False)
 MORRISONS_API_KEY = config.get("morrisons_api_key")
-MORRISONS_BEARER_TOKEN = config.get("morrisons_bearer_token")
 MORRISONS_LOCATION_ID = config.get("target_store", {}).get("morrisons_location_id")
+
+MORRISONS_BEARER_TOKEN_URL = (
+    "https://gist.githubusercontent.com/Daave2/b62faeed0dd435100773d4de775ff52d/"
+    "raw/93803650cc2c3570ab7673ef63d101c2360fe620/gistfile1.txt"
+)
+
+MORRISONS_BEARER_TOKEN = None
+try:
+    response = requests.get(MORRISONS_BEARER_TOKEN_URL, timeout=10)
+    response.raise_for_status()
+    MORRISONS_BEARER_TOKEN = response.text.strip()
+    app_logger.info("Fetched Morrisons bearer token from gist.")
+except requests.RequestException as exc:
+    MORRISONS_BEARER_TOKEN = config.get("morrisons_bearer_token")
+    if MORRISONS_BEARER_TOKEN:
+        app_logger.warning("Fell back to config-provided Morrisons bearer token.")
+    else:
+        app_logger.warning(f"Could not fetch Morrisons bearer token: {exc}")
+
 if ENABLE_STOCK_LOOKUP and not all([MORRISONS_API_KEY, MORRISONS_LOCATION_ID]):
     app_logger.warning(
         "Stock lookup is enabled, but Morrisons API key or location ID is missing."

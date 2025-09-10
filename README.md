@@ -10,7 +10,9 @@ This project collects "Item Not Found" (INF) metrics from Amazon Seller Central.
    the values. `thumbnail_size` controls the width of product images in
    emails only (chat messages keep full-size images). If `email_report`
    is enabled, configure the `email_settings` block with your SMTP server
-   details.
+   details. If `enable_stock_lookup` is set, the Morrisons bearer token is
+   fetched automatically from a public gist and should not be stored in
+   `config.json`.
 4. **Run**: execute `python inf.py`. Use `--yesterday` to fetch the previous day's data.
 
 ## GitHub Actions
