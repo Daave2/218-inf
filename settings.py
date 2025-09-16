@@ -70,7 +70,7 @@ MORRISONS_LOCATION_ID = config.get("target_store", {}).get("morrisons_location_i
 
 MORRISONS_BEARER_TOKEN_URL = (
     "https://gist.githubusercontent.com/Daave2/b62faeed0dd435100773d4de775ff52d/"
-    "raw/93803650cc2c3570ab7673ef63d101c2360fe620/gistfile1.txt"
+    "raw/gistfile1.txt"
 )
 
 MORRISONS_BEARER_TOKEN = None
