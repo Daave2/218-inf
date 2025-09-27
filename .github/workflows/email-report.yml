@@ -107,7 +107,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: inf-email-output-${{ github.run_id }}
+          name: inf-items-history
           path: |
             output/
             inf_app.log
