@@ -126,6 +126,17 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 JSON_LOG_FILE = os.path.join(OUTPUT_DIR, "inf_items.jsonl")
 STORAGE_STATE = "state.json"
 
+# GitHub artifact settings
+GITHUB_ARTIFACT_SETTINGS = config.get("github_artifact", {})
+ENABLE_ARTIFACT_LOG_SYNC = GITHUB_ARTIFACT_SETTINGS.get("enable_log_sync", False)
+GITHUB_ARTIFACT_NAME = GITHUB_ARTIFACT_SETTINGS.get("artifact_name")
+GITHUB_ARTIFACT_REPOSITORY = GITHUB_ARTIFACT_SETTINGS.get("repository") or os.getenv(
+    "GITHUB_REPOSITORY"
+)
+GITHUB_ARTIFACT_TOKEN = os.getenv(
+    GITHUB_ARTIFACT_SETTINGS.get("token_env_var", "GITHUB_TOKEN")
+)
+
 PAGE_TIMEOUT = 120_000
 ACTION_TIMEOUT = 60_000
 WAIT_TIMEOUT = 60_000

@@ -47,6 +47,28 @@ The email report workflow also requires these SMTP secrets:
 
 The workflow builds `config.json` from these secrets and runs `python inf.py`. Artifacts such as log files and scraped data are uploaded for inspection.
 
+### Preventing duplicate chat messages in Actions
+
+`filter_items_posted_today` normally reads from `output/inf_items.jsonl` to avoid
+sending duplicate chat messages in the same day. GitHub Actions runners start
+fresh on every run, so the log file can be empty. Enable the optional
+`github_artifact` block in `config.json` to pull the most recent log history from
+an artifact before filtering:
+
+```json
+"github_artifact": {
+  "enable_log_sync": true,
+  "artifact_name": "inf-items-history",
+  "repository": "owner/repo",
+  "token_env_var": "GITHUB_TOKEN"
+}
+```
+
+Ensure your workflow uploads `output/inf_items.jsonl` with
+`actions/upload-artifact` under the matching name after each run. When the
+next workflow starts, the scraper will download that artifact using the
+provided token and reuse the logged SKUs for duplicate suppression.
+
 `run-scraper.yml` disables emailing, while `email-report.yml` omits the chat webhook.
 
 
