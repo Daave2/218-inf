@@ -123,7 +123,17 @@ INVENTORY_URL = (
 # Paths & timeouts
 OUTPUT_DIR = "output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
-JSON_LOG_FILE = os.path.join(OUTPUT_DIR, "inf_items.jsonl")
+
+_configured_log_file = (
+    os.environ.get("INF_JSON_LOG_FILE")
+    or config.get("json_log_file")
+    or os.path.join(OUTPUT_DIR, "inf_items.jsonl")
+)
+
+JSON_LOG_FILE = os.path.abspath(os.path.expanduser(_configured_log_file))
+log_dir = os.path.dirname(JSON_LOG_FILE)
+if log_dir:
+    os.makedirs(log_dir, exist_ok=True)
 STORAGE_STATE = "state.json"
 
 PAGE_TIMEOUT = 120_000

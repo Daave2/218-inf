@@ -21,7 +21,12 @@ from auth import (
     login_with_retries,
 )
 from scraper import scrape_with_retries
-from notifications import log_inf_results, post_inf_to_chat, email_inf_report
+from notifications import (
+    log_inf_results,
+    post_inf_to_chat,
+    email_inf_report,
+    filter_items_posted_today,
+)
 from database import create_investigation_from_scrape
 from stock_checker import enrich_items_with_stock_data
 
@@ -69,24 +74,32 @@ async def main(args):
     else:
         app_logger.info(f"Retrieved {len(data)} INF items; processing...")
 
-        if ENABLE_STOCK_LOOKUP:
-            app_logger.info("Stock lookup enabled. Enriching items...")
-            data = await enrich_items_with_stock_data(data)
-        else:
-            app_logger.info("Stock lookup disabled. Skipping enrichment.")
+        data = await filter_items_posted_today(data)
 
-        if ENABLE_SUPABASE_UPLOAD and not EMAIL_REPORT:
-            app_logger.info("Supabase upload is enabled. Creating investigation...")
-            await create_investigation_from_scrape(data)
-        else:
+        if not data:
             app_logger.info(
-                "Supabase upload disabled or email mode active. Skipping database update."
+                "All INF items retrieved have already been posted today. "
+                "Skipping downstream notifications."
             )
+        else:
+            if ENABLE_STOCK_LOOKUP:
+                app_logger.info("Stock lookup enabled. Enriching items...")
+                data = await enrich_items_with_stock_data(data)
+            else:
+                app_logger.info("Stock lookup disabled. Skipping enrichment.")
 
-        # Run existing logging and notification steps
-        await log_inf_results(data)
-        await post_inf_to_chat(data)
-        await email_inf_report(data)
+            if ENABLE_SUPABASE_UPLOAD and not EMAIL_REPORT:
+                app_logger.info("Supabase upload is enabled. Creating investigation...")
+                await create_investigation_from_scrape(data)
+            else:
+                app_logger.info(
+                    "Supabase upload disabled or email mode active. Skipping database update."
+                )
+
+            # Run existing logging and notification steps
+            await log_inf_results(data)
+            await post_inf_to_chat(data)
+            await email_inf_report(data)
 
     app_logger.info("Run complete; shutting down browser and Playwright")
     await browser.close()

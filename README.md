@@ -2,6 +2,8 @@
 
 This project collects "Item Not Found" (INF) metrics from Amazon Seller Central. Data is logged to `output/inf_items.jsonl`, posted to a chat webhook, and can optionally be emailed as an HTML table.
 
+Set the `INF_JSON_LOG_FILE` environment variable or the optional `json_log_file` config value to change where the JSONL log is stored.
+
 ## Local setup
 
 1. **Python**: install Python 3.11.
@@ -48,6 +50,31 @@ The email report workflow also requires these SMTP secrets:
 The workflow builds `config.json` from these secrets and runs `python inf.py`. Artifacts such as log files and scraped data are uploaded for inspection.
 
 `run-scraper.yml` disables emailing, while `email-report.yml` omits the chat webhook.
+
+### Persisting the daily INF log in GitHub Actions
+
+Daily duplicate filtering relies on the JSONL log mentioned above. GitHub Actions runners start with a clean workspace, so cache the log file to keep history between runs:
+
+```yaml
+- name: Restore INF log cache
+  uses: actions/cache@v4
+  with:
+    path: output/inf_items.jsonl
+    key: inf-log-${{ github.ref_name }}
+
+# run the scraper here
+
+- name: Save INF log cache
+  if: always()
+  uses: actions/cache@v4
+  with:
+    path: output/inf_items.jsonl
+    key: inf-log-${{ github.ref_name }}-${{ github.run_id }}
+    restore-keys: |
+      inf-log-${{ github.ref_name }}
+```
+
+If you store the log somewhere else, update the cache `path` to match and export `INF_JSON_LOG_FILE` so the scraper reads the same location.
 
 
 
