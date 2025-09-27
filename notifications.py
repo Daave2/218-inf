@@ -49,6 +49,71 @@ async def log_inf_results(data: list) -> None:
             app_logger.error(f"Log write error: {e}")
 
 
+async def filter_items_posted_today(items: list[dict]) -> list[dict]:
+    """Remove items that were already logged earlier in the same day."""
+
+    if not items:
+        return []
+
+    today = datetime.now(LOCAL_TIMEZONE).date()
+    posted_skus: set[str] = set()
+
+    async with log_lock:
+        try:
+            async with aiofiles.open(JSON_LOG_FILE, "r", encoding="utf-8") as f:
+                async for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        entry = json.loads(line)
+                    except json.JSONDecodeError:
+                        app_logger.warning(
+                            "Skipping malformed log entry while checking duplicates."
+                        )
+                        continue
+
+                    timestamp = entry.get("timestamp")
+                    if not timestamp:
+                        continue
+                    try:
+                        logged_dt = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
+                    except ValueError:
+                        app_logger.warning(
+                            "Unexpected timestamp format in log entry: %s", timestamp
+                        )
+                        continue
+
+                    if logged_dt.date() != today:
+                        continue
+
+                    for logged_item in entry.get("inf_items", []):
+                        sku = logged_item.get("sku")
+                        if sku:
+                            posted_skus.add(str(sku))
+        except FileNotFoundError:
+            return items
+        except Exception as exc:
+            app_logger.error(
+                f"Failed to read log history for duplicate filtering: {exc}",
+                exc_info=True,
+            )
+            return items
+
+    if not posted_skus:
+        return items
+
+    filtered_items = [item for item in items if str(item.get("sku")) not in posted_skus]
+    removed_count = len(items) - len(filtered_items)
+
+    if removed_count:
+        app_logger.info(
+            "Filtered %s previously posted INF item(s) for today.", removed_count
+        )
+
+    return filtered_items
+
+
 async def post_inf_to_chat(items: list[dict]) -> None:
     if not INF_WEBHOOK:
         app_logger.warning("INF_WEBHOOK_URL not set; skipping chat post.")
