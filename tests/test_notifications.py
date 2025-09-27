@@ -22,6 +22,22 @@ def test_filter_items_posted_today_without_history(log_file):
     assert filtered == items
 
 
+def test_filter_items_posted_today_syncs_artifact(monkeypatch, log_file):
+    called = False
+
+    async def fake_sync():
+        nonlocal called
+        called = True
+
+    monkeypatch.setattr(notifications, "ensure_log_history_from_artifact", fake_sync)
+
+    items = [{"sku": "SKU-1"}]
+
+    asyncio.run(notifications.filter_items_posted_today(items))
+
+    assert called is True
+
+
 def test_filter_items_posted_today_ignores_previous_days(log_file):
     yesterday = datetime.now(notifications.LOCAL_TIMEZONE) - timedelta(days=1)
     entry = {

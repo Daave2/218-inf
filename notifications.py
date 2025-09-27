@@ -1,8 +1,8 @@
+import asyncio
 import json
 import ssl
 import urllib.parse
 from datetime import datetime
-import asyncio
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -11,6 +11,7 @@ import aiohttp
 import aiofiles
 import certifi
 
+from artifact_utils import ensure_log_history_from_artifact
 from settings import (
     INF_WEBHOOK,
     TARGET_STORE,
@@ -54,6 +55,8 @@ async def filter_items_posted_today(items: list[dict]) -> list[dict]:
 
     if not items:
         return []
+
+    await ensure_log_history_from_artifact()
 
     today = datetime.now(LOCAL_TIMEZONE).date()
     posted_skus: set[str] = set()
