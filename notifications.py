@@ -3,6 +3,7 @@ import json
 import ssl
 import urllib.parse
 from datetime import datetime
+from typing import Any
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -50,11 +51,30 @@ async def log_inf_results(data: list) -> None:
             app_logger.error(f"Log write error: {e}")
 
 
+def _normalize_sku(raw: Any) -> str | None:
+    """Convert a raw SKU value to a comparable format."""
+
+    if raw is None:
+        return None
+
+    if isinstance(raw, str):
+        normalized = raw.strip()
+    else:
+        normalized = str(raw).strip()
+
+    return normalized or None
+
+
 async def filter_items_posted_today(items: list[dict]) -> list[dict]:
     """Remove items that were already logged earlier in the same day."""
 
     if not items:
         return []
+
+    for item in items:
+        normalized = _normalize_sku(item.get("sku"))
+        if normalized is not None:
+            item["sku"] = normalized
 
     await ensure_log_history_from_artifact()
 
@@ -91,9 +111,9 @@ async def filter_items_posted_today(items: list[dict]) -> list[dict]:
                         continue
 
                     for logged_item in entry.get("inf_items", []):
-                        sku = logged_item.get("sku")
+                        sku = _normalize_sku(logged_item.get("sku"))
                         if sku:
-                            posted_skus.add(str(sku))
+                            posted_skus.add(sku)
         except FileNotFoundError:
             return items
         except Exception as exc:
@@ -106,7 +126,9 @@ async def filter_items_posted_today(items: list[dict]) -> list[dict]:
     if not posted_skus:
         return items
 
-    filtered_items = [item for item in items if str(item.get("sku")) not in posted_skus]
+    filtered_items = [
+        item for item in items if _normalize_sku(item.get("sku")) not in posted_skus
+    ]
     removed_count = len(items) - len(filtered_items)
 
     if removed_count:

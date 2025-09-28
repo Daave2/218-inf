@@ -66,3 +66,19 @@ def test_filter_items_posted_today_excludes_current_day_duplicates(log_file):
     filtered = asyncio.run(notifications.filter_items_posted_today(items))
 
     assert [item["sku"] for item in filtered] == ["SKU-2", "SKU-3"]
+
+
+def test_filter_items_posted_today_normalizes_whitespace(log_file):
+    today = datetime.now(notifications.LOCAL_TIMEZONE)
+    entry = {
+        "timestamp": today.strftime("%Y-%m-%d %H:%M:%S"),
+        "inf_items": [{"sku": " SKU-1 "}],
+    }
+    log_file.write_text(json.dumps(entry) + "\n")
+
+    items = [{"sku": "SKU-1"}, {"sku": " SKU-2 "}, {"sku": "SKU-3"}]
+
+    filtered = asyncio.run(notifications.filter_items_posted_today(items))
+
+    assert [item["sku"] for item in filtered] == ["SKU-2", "SKU-3"]
+    assert items[1]["sku"] == "SKU-2"
