@@ -89,6 +89,11 @@ jobs:
               "merchant_id": "${{ secrets.TARGET_MERCHANT_ID }}",
               "marketplace_id": "${{ secrets.TARGET_MARKETPLACE_ID }}",
               "morrisons_location_id": "${{ secrets.TARGET_MORRISONS_LOCATION_ID }}"
+            },
+            "github_artifact": {
+              "enable_log_sync": true,
+              "artifact_name": "inf-items-history",
+              "token_env_var": "GITHUB_TOKEN"
             }
           }' > config.json
 
