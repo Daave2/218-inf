@@ -1,5 +1,9 @@
 name: Run Amazon INF Scraper
 
+permissions:
+  contents: read
+  actions: write
+
 on:
   workflow_dispatch:
   schedule:
@@ -43,6 +47,8 @@ jobs:
     if: needs.check-time.outputs.run_job == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
 
     steps:
       - name: 1. Check out repository
@@ -98,8 +104,6 @@ jobs:
           }' > config.json
 
       - name: 7. Run the INF scraper
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python inf.py
 
       - name: 8. Upload artifacts
