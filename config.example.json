@@ -37,7 +37,8 @@
     "enable_log_sync": false,
     "artifact_name": "inf-items-history",
     "repository": "owner/repo",
-    "token_env_var": "GITHUB_TOKEN"
+    "token_env_var": "GITHUB_TOKEN",
+    "token": "ghp_your_token_here"
   },
   "schedule_times": ["10:00", "16:00", "19:00"],
   "auto_concurrency": {

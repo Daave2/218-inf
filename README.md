@@ -60,14 +60,17 @@ an artifact before filtering:
   "enable_log_sync": true,
   "artifact_name": "inf-items-history",
   "repository": "owner/repo",
-  "token_env_var": "GITHUB_TOKEN"
+  "token_env_var": "GITHUB_TOKEN",
+  "token": "ghp_your_token_here"
 }
 ```
 
 Ensure your workflow uploads `output/inf_items.jsonl` with
 `actions/upload-artifact` under the matching name after each run. When the
 next workflow starts, the scraper will download that artifact using the
-provided token and reuse the logged SKUs for duplicate suppression.
+provided token and reuse the logged SKUs for duplicate suppression. The token
+can be supplied either via the configured environment variable or directly in
+`config.json` for local runs.
 
 `run-scraper.yml` disables emailing, while `email-report.yml` omits the chat webhook.
 

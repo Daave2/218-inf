@@ -15,6 +15,7 @@ from settings import (
     GITHUB_ARTIFACT_NAME,
     GITHUB_ARTIFACT_REPOSITORY,
     GITHUB_ARTIFACT_TOKEN,
+    GITHUB_ARTIFACT_TOKEN_ENV_VAR,
     JSON_LOG_FILE,
     app_logger,
 )
@@ -66,7 +67,9 @@ async def _download_log_history() -> None:
 
     if not GITHUB_ARTIFACT_TOKEN:
         app_logger.warning(
-            "Artifact log sync enabled but no GitHub token available; skipping."
+            "Artifact log sync enabled but no GitHub token was available. Set %s "
+            "or provide 'github_artifact.token' in config.json to enable log sync.",
+            GITHUB_ARTIFACT_TOKEN_ENV_VAR,
         )
         return
 
