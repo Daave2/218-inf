@@ -98,6 +98,8 @@ jobs:
           }' > config.json
 
       - name: 7. Run the INF scraper
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python inf.py
 
       - name: 8. Upload artifacts
