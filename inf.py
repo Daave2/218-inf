@@ -97,8 +97,8 @@ async def main(args):
                 )
 
             # Run existing logging and notification steps
-            await log_inf_results(data)
-            await post_inf_to_chat(data)
+            run_timestamp = await log_inf_results(data)
+            await post_inf_to_chat(data, run_timestamp)
             await email_inf_report(data)
 
     app_logger.info("Run complete; shutting down browser and Playwright")
