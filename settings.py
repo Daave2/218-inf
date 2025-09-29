@@ -133,9 +133,22 @@ GITHUB_ARTIFACT_NAME = GITHUB_ARTIFACT_SETTINGS.get("artifact_name")
 GITHUB_ARTIFACT_REPOSITORY = GITHUB_ARTIFACT_SETTINGS.get("repository") or os.getenv(
     "GITHUB_REPOSITORY"
 )
-GITHUB_ARTIFACT_TOKEN = os.getenv(
-    GITHUB_ARTIFACT_SETTINGS.get("token_env_var", "GITHUB_TOKEN")
+GITHUB_ARTIFACT_TOKEN_ENV_VAR = GITHUB_ARTIFACT_SETTINGS.get(
+    "token_env_var", "GITHUB_TOKEN"
 )
+GITHUB_ARTIFACT_TOKEN = os.getenv(GITHUB_ARTIFACT_TOKEN_ENV_VAR)
+
+if not GITHUB_ARTIFACT_TOKEN:
+    config_token = GITHUB_ARTIFACT_SETTINGS.get("token")
+    if config_token:
+        GITHUB_ARTIFACT_TOKEN = config_token
+    elif ENABLE_ARTIFACT_LOG_SYNC:
+        app_logger.warning(
+            "Artifact log sync is enabled but %s was not set and no token was "
+            "provided in config; log history will not be downloaded.",
+            GITHUB_ARTIFACT_TOKEN_ENV_VAR,
+        )
+        ENABLE_ARTIFACT_LOG_SYNC = False
 
 PAGE_TIMEOUT = 120_000
 ACTION_TIMEOUT = 60_000
