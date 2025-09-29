@@ -36,10 +36,15 @@ from settings import (
 )
 
 
-async def log_inf_results(data: list) -> None:
+LOG_TIMESTAMP_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+
+async def log_inf_results(data: list) -> str:
     async with log_lock:
+        timestamp = datetime.now(LOCAL_TIMEZONE)
+        timestamp_str = timestamp.strftime(LOG_TIMESTAMP_FORMAT)
         entry = {
-            "timestamp": datetime.now(LOCAL_TIMEZONE).strftime("%Y-%m-%d %H:%M:%S"),
+            "timestamp": timestamp_str,
             "store": TARGET_STORE["store_name"],
             "inf_items": data,
         }
@@ -49,6 +54,8 @@ async def log_inf_results(data: list) -> None:
             app_logger.info("Logged INF results to file.")
         except Exception as e:
             app_logger.error(f"Log write error: {e}")
+
+    return timestamp_str
 
 
 def _normalize_sku(raw: Any) -> str | None:
@@ -100,7 +107,7 @@ async def filter_items_posted_today(items: list[dict]) -> list[dict]:
                     if not timestamp:
                         continue
                     try:
-                        logged_dt = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
+                        logged_dt = datetime.strptime(timestamp, LOG_TIMESTAMP_FORMAT)
                     except ValueError:
                         app_logger.warning(
                             "Unexpected timestamp format in log entry: %s", timestamp
@@ -139,7 +146,71 @@ async def filter_items_posted_today(items: list[dict]) -> list[dict]:
     return filtered_items
 
 
-async def post_inf_to_chat(items: list[dict]) -> None:
+async def get_previous_run_time(before_timestamp: str | None) -> datetime | None:
+    """Return the most recent run time earlier in the same day."""
+
+    if not before_timestamp:
+        return None
+
+    try:
+        current_run = datetime.strptime(before_timestamp, LOG_TIMESTAMP_FORMAT)
+    except ValueError:
+        app_logger.warning(
+            "Unexpected timestamp format for current run: %s", before_timestamp
+        )
+        return None
+
+    await ensure_log_history_from_artifact()
+
+    latest_run: datetime | None = None
+
+    async with log_lock:
+        try:
+            async with aiofiles.open(JSON_LOG_FILE, "r", encoding="utf-8") as f:
+                async for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+
+                    try:
+                        entry = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+
+                    timestamp = entry.get("timestamp")
+                    if not timestamp:
+                        continue
+
+                    try:
+                        logged_dt = datetime.strptime(timestamp, LOG_TIMESTAMP_FORMAT)
+                    except ValueError:
+                        continue
+
+                    if (
+                        logged_dt.date() != current_run.date()
+                        or logged_dt >= current_run
+                    ):
+                        continue
+
+                    if latest_run is None or logged_dt > latest_run:
+                        latest_run = logged_dt
+        except FileNotFoundError:
+            return None
+        except Exception as exc:
+            app_logger.error(
+                "Unable to determine previous run time: %s", exc, exc_info=True
+            )
+            return None
+
+    if latest_run is None:
+        return None
+
+    return LOCAL_TIMEZONE.localize(latest_run)
+
+
+async def post_inf_to_chat(
+    items: list[dict], current_run_timestamp: str | None = None
+) -> None:
     if not INF_WEBHOOK:
         app_logger.warning("INF_WEBHOOK_URL not set; skipping chat post.")
         return
@@ -157,6 +228,14 @@ async def post_inf_to_chat(items: list[dict]) -> None:
 
     ts = datetime.now(LOCAL_TIMEZONE).strftime("%A %d %B, %H:%M")
     store = TARGET_STORE["store_name"]
+
+    last_run_time = await get_previous_run_time(current_run_timestamp)
+    if last_run_time:
+        timeframe_label = f"INF Items since {last_run_time.strftime('%H:%M')}"
+    else:
+        timeframe_label = "INF Items So far today"
+
+    header_title = f"{timeframe_label} - {store}"
 
     if ENABLE_STOCK_LOOKUP:
         zero_stock = [it for it in items if it.get("stock_on_hand") == 0]
@@ -256,7 +335,7 @@ async def post_inf_to_chat(items: list[dict]) -> None:
                         "cardId": f"inf-report-{store.replace(' ', '-')}-{cat_slug}-{idx}",
                         "card": {
                             "header": {
-                                "title": f"Top INF Items Report - {store}",
+                                "title": header_title,
                                 "subtitle": subtitle,
                                 "imageUrl": "https://cdn-icons-png.flaticon.com/512/2838/2838885.png",
                                 "imageType": "CIRCLE",
