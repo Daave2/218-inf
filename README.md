@@ -2,6 +2,7 @@
 
 This project collects "Item Not Found" (INF) metrics from Amazon Seller Central. Data is logged to `output/inf_items.jsonl`, posted to a chat webhook, and can optionally be emailed as an HTML table.
 
+
 ## Local setup
 
 1. **Python**: install Python 3.11.
