@@ -1,7 +1,9 @@
 import asyncio
 import re
 from typing import Awaitable, Callable
+
 from playwright.async_api import Browser, Page, TimeoutError, expect
+
 from settings import (
     PAGE_TIMEOUT,
     WAIT_TIMEOUT,
@@ -11,6 +13,26 @@ from settings import (
     DATE_FILTER_DELAY,
     app_logger,
 )
+
+
+def _clean_cell_text(values: list[str], index: int) -> str:
+    """Return stripped text for a given table cell index."""
+    if index >= len(values):
+        return ""
+    return values[index].strip()
+
+
+def _row_to_item(cells_text: list[str], thumb_src: str) -> dict:
+    """Transform Inventory Insights row cell texts into an INF item payload."""
+    image_url = re.sub(r"\._SS\d+_\.", f"._SS{SMALL_IMAGE_SIZE}_.", thumb_src)
+    return {
+        "image_url": image_url,
+        "sku": _clean_cell_text(cells_text, 1),
+        "product_name": _clean_cell_text(cells_text, 2),
+        "inf_units": _clean_cell_text(cells_text, 3),
+        "orders_impacted": _clean_cell_text(cells_text, 4),
+        "inf_pct": _clean_cell_text(cells_text, 8),
+    }
 
 
 async def wait_for_table_change(
@@ -112,21 +134,15 @@ async def scrape_inf_data(
             try:
                 cells = r.locator("td")
                 thumb = await cells.nth(0).locator("img").get_attribute("src") or ""
-                img = re.sub(r"\._SS\d+_\.", f"._SS{SMALL_IMAGE_SIZE}_.", thumb)
-                items.append(
-                    {
-                        "image_url": img,
-                        "sku": await cells.nth(1).locator("span").inner_text(),
-                        "product_name": await cells.nth(2)
-                        .locator("a span")
-                        .inner_text(),
-                        "inf_units": await cells.nth(3).locator("span").inner_text(),
-                        "orders_impacted": await cells.nth(4)
-                        .locator("span")
-                        .inner_text(),
-                        "inf_pct": await cells.nth(8).locator("span").inner_text(),
-                    }
-                )
+                cells_text = await cells.all_inner_texts()
+                item = _row_to_item(cells_text, thumb)
+                if not item["sku"] and not item["product_name"]:
+                    app_logger.warning(
+                        "Skipping row with empty SKU and product name after text "
+                        "extraction."
+                    )
+                    continue
+                items.append(item)
             except Exception as e:
                 app_logger.warning(f"Failed to parse row: {e}")
 
